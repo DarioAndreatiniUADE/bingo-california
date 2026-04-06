@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gran Bingo Solidario - Club California</title>
     
+    <link rel="icon" href="escudo.png" type="image/png">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
@@ -25,16 +27,25 @@
             margin: 0;
             padding: 0;
             color: #333;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background-color: var(--fondo-oscuro);
             overflow: hidden; 
             position: relative; 
         }
 
+        /* --- CONTENEDOR PRINCIPAL CON SCALING (ZOOM 67%) --- */
+        #app-container {
+            width: calc(100vw / 0.67);
+            height: calc(100vh / 0.67);
+            transform: scale(0.67);
+            transform-origin: top left;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
         /* --- CAPAS DE FONDO --- */
         .fondo-base {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -44,7 +55,7 @@
         }
 
         .marca-agua {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -93,15 +104,175 @@
             text-shadow: 0px 4px 10px rgba(0,0,0,0.8);
         }
 
-        /* --- SECCIÓN DE SPONSORS (NUEVA ARRIBA) --- */
+        /* --- MENÚ DE CONFIGURACIÓN --- */
+        .config-container {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            z-index: 1000; 
+        }
+
+        .config-menu-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--dorado-club);
+            border-radius: 50%;
+            color: white;
+            font-size: 2rem;
+            line-height: 1;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .config-menu-btn:hover {
+            background: var(--dorado-club);
+            color: var(--fondo-oscuro);
+            transform: scale(1.1);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            overflow: hidden;
+            min-width: 200px;
+            border: 1px solid #ccc;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: #f0f0f0;
+            color: var(--rojo-club);
+        }
+
+        /* --- MODALES DE EDICIÓN --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            border-top: 5px solid var(--rojo-club);
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            color: var(--rojo-club);
+            font-size: 2rem;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        .modal p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .modal textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            resize: none;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal textarea:focus {
+            outline: none;
+            border-color: var(--rojo-club);
+        }
+
+        .modal-btns {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-cancelar { 
+            background: #e0e0e0; 
+            color: #333;
+        }
+        .btn-cancelar:hover { background: #ccc; }
+        
+        .btn-guardar { 
+            background: var(--rojo-club); 
+            color: white; 
+            box-shadow: 0 4px 6px rgba(139, 26, 26, 0.4);
+        }
+        .btn-guardar:hover { background: var(--rojo-oscuro); transform: translateY(-2px); }
+
+        /* --- CINTAS CORREDIZAS --- */
         .seccion-sponsors {
-            background: rgba(255, 255, 255, 0.85); /* Fondo claro para destacar marcas */
+            background: rgba(255, 255, 255, 0.85); 
             border-bottom: 3px solid var(--dorado-club);
             padding: 10px 0 15px 0;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             position: relative;
             z-index: 5;
             backdrop-filter: blur(5px);
+            overflow: hidden;
+            width: 100%;
         }
 
         .titulo-sponsors {
@@ -114,28 +285,72 @@
             letter-spacing: 2px;
         }
 
-        .cinta-sponsors {
-            overflow: hidden; 
-            white-space: nowrap;
+        .cinta-premios {
+            background: linear-gradient(to right, var(--rojo-oscuro), var(--rojo-club), var(--rojo-oscuro));
+            border-top: 3px solid var(--dorado-club); 
+            padding: 20px 0; 
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.2);
+            position: relative; 
+            z-index: 10; 
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .marquee-track {
             display: flex;
+            width: max-content;
+        }
+
+        .marquee-items {
+            display: flex;
+            gap: 40px;
+            padding-right: 40px; 
             align-items: center;
         }
 
+        .cinta-sponsors:hover .marquee-track,
+        .cinta-premios:hover .marquee-track {
+            animation-play-state: paused !important;
+        }
+
+        /* La animación 100% precisa */
+        @keyframes scroll-infinito {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } 
+        }
+
+        /* --- ESTILOS DE LOS ITEMS --- */
         .sponsor-item {
-            display: inline-block;
             font-family: 'Bebas Neue', sans-serif;
             font-size: 2.2rem;
             color: var(--fondo-oscuro);
-            margin: 0 30px;
             letter-spacing: 1px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            white-space: nowrap;
         }
 
-        .cinta-sponsors:hover .marquee-contenido {
-            animation-play-state: paused;
+        .premio-item {
+            background: rgba(0,0,0,0.2);
+            color: white;
+            padding: 12px 35px; 
+            border-radius: 50px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.2rem; 
+            letter-spacing: 2px;
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
 
-        /* --- CONTENEDOR PRINCIPAL --- */
+        .premio-item:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--dorado-brillante);
+            transform: translateY(-2px);
+        }
+
+        /* --- CONTENEDOR PRINCIPAL BINGO --- */
         .contenedor-principal {
             display: flex;
             flex: 1; 
@@ -375,138 +590,175 @@
         .animar-marca {
             animation: pop-celda 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-
-        /* --- CINTA DE PREMIOS ANIMADA (AHORA ABAJO) --- */
-        .cinta-premios {
-            background: linear-gradient(to right, var(--rojo-oscuro), var(--rojo-club), var(--rojo-oscuro));
-            border-top: 3px solid var(--dorado-club); /* Borde arriba porque ahora va al fondo */
-            padding: 20px 0; 
-            overflow: hidden; 
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            box-shadow: inset 0 5px 10px rgba(0,0,0,0.2);
-            position: relative; 
-            z-index: 10; /* Para que quede por encima de todo en el fondo */
-        }
-
-        .marquee-contenido {
-            display: inline-flex;
-            gap: 40px;
-            animation: scroll-premios 35s linear infinite;
-        }
-
-        .cinta-premios:hover .marquee-contenido {
-            animation-play-state: paused;
-        }
-
-        .premio-item {
-            background: rgba(0,0,0,0.2);
-            color: white;
-            padding: 12px 35px; 
-            border-radius: 50px;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.2rem; 
-            letter-spacing: 2px;
-            border: 2px solid rgba(212, 175, 55, 0.5);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-        }
-
-        .premio-item:hover {
-            background: rgba(212, 175, 55, 0.2);
-            border-color: var(--dorado-brillante);
-            transform: translateY(-2px);
-        }
-
-        @keyframes scroll-premios {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } 
-        }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 1000px) {
-            header h1 { font-size: 2.5rem; }
-            .contenedor-principal { flex-direction: column; overflow-y: auto; padding: 10px; }
-            body { height: auto; overflow: auto; }
-            .panel-control { max-width: 100%; }
-            .cuadricula { aspect-ratio: 10 / 9; max-width: 100%; }
-            .celda { font-size: 1.5rem; }
-            .marca-agua { background-size: 90% auto; } 
-        }
     </style>
 </head>
 <body>
 
-    <div class="fondo-base"></div>
-    <div class="marca-agua"></div>
+    <div class="config-container">
+        <button class="config-menu-btn" id="btnConfig">⋮</button>
+        <div class="dropdown-menu" id="dropdownConfig">
+            <div class="dropdown-item" id="btnEditSponsors">Editar Sponsors</div>
+            <div class="dropdown-item" id="btnEditPremios">Editar Premios</div>
+        </div>
+    </div>
 
-    <header>
-        <img src="escudo.png" alt="Escudo Club California">
-        <h1>GRAN BINGO SOLIDARIO</h1>
-        <img src="escudo.png" alt="Escudo Club California">
-    </header>
-
-    <div class="seccion-sponsors">
-        <p class="titulo-sponsors">Agradecemos a nuestros sponsors:</p>
-        <div class="cinta-sponsors">
-            <div class="marquee-contenido">
-                <div class="sponsor-item">✦ [Nombre Sponsor 1]</div>
-                <div class="sponsor-item">✦ [Nombre Sponsor 2]</div>
-                <div class="sponsor-item">✦ [Nombre Sponsor 3]</div>
-                <div class="sponsor-item">✦ [Nombre Sponsor 4]</div>
-                <div class="sponsor-item">✦ [Nombre Sponsor 5]</div>
-                
-                <div class="sponsor-item">✦ [Nombre Sponsor 1]</div>
-                <div class="sponsor-item">✦ [Nombre Sponsor 2]</div>
-                <div class="sponsor-item">✦ [Nombre Sponsor 3]</div>
-                <div class="sponsor-item">✦ [Nombre Sponsor 4]</div>
-                <div class="sponsor-item">✦ [Nombre Sponsor 5]</div>
+    <div class="modal" id="modalSponsors">
+        <div class="modal-content">
+            <h3>Editar Sponsors</h3>
+            <p>Escribe un sponsor por línea:</p>
+            <textarea id="textSponsors">Sponsor del Club</textarea>
+            <div class="modal-btns">
+                <button class="modal-btn btn-cancelar" onclick="cerrarModal('modalSponsors')">Cancelar</button>
+                <button class="modal-btn btn-guardar" onclick="guardarSponsors()">Guardar</button>
             </div>
         </div>
     </div>
 
-    <main class="contenedor-principal">
-        
-        <div class="panel-control">
-            <div class="numero-anterior">Anterior: <span id="displayAnterior">--</span></div>
-            <h2 class="titulo-panel">ÚLTIMO NÚMERO</h2>
-            
-            <div class="display-numero" id="displayNumero">--</div>
-            
-            <div class="botones-container">
-                <button class="btn-generar" id="btnGenerar">Tirar Bolilla</button>
-                <button class="btn-reiniciar" id="btnReiniciar">🔄 Nueva Partida</button>
+    <div class="modal" id="modalPremios">
+        <div class="modal-content">
+            <h3>Editar Premios</h3>
+            <p>Escribe un premio por línea:</p>
+            <textarea id="textPremios">1° Premio: Pelota
+2° Premio: Make Up
+3° Premio: Juego de Mesa
+4° Premio: Fantasma</textarea>
+            <div class="modal-btns">
+                <button class="modal-btn btn-cancelar" onclick="cerrarModal('modalPremios')">Cancelar</button>
+                <button class="modal-btn btn-guardar" onclick="guardarPremios()">Guardar</button>
             </div>
-            
-            <div class="contador" id="contador">Llamados: 0/90</div>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <div class="fondo-base"></div>
+        <div class="marca-agua"></div>
+
+        <header>
+            <img src="escudo.png" alt="Escudo Club California">
+            <h1>GRAN BINGO SOLIDARIO</h1>
+            <img src="escudo.png" alt="Escudo Club California">
+        </header>
+
+        <div class="seccion-sponsors">
+            <p class="titulo-sponsors">Agradecemos a nuestros sponsors:</p>
+            <div class="cinta-sponsors">
+                <div class="marquee-track" id="trackSponsors">
+                    </div>
+            </div>
         </div>
 
-        <div class="contenedor-cuadricula">
-            <div class="cuadricula" id="cuadricula">
+        <main class="contenedor-principal">
+            <div class="panel-control">
+                <div class="numero-anterior">Anterior: <span id="displayAnterior">--</span></div>
+                <h2 class="titulo-panel">ÚLTIMO NÚMERO</h2>
+                <div class="display-numero" id="displayNumero">--</div>
+                <div class="botones-container">
+                    <button class="btn-generar" id="btnGenerar">Tirar Bolilla</button>
+                    <button class="btn-reiniciar" id="btnReiniciar">🔄 Nueva Partida</button>
+                </div>
+                <div class="contador" id="contador">Llamados: 0/90</div>
+            </div>
+
+            <div class="contenedor-cuadricula">
+                <div class="cuadricula" id="cuadricula"></div>
+            </div>
+        </main>
+
+        <div class="cinta-premios">
+            <div class="marquee-track" id="trackPremios">
                 </div>
         </div>
 
-    </main>
+    </div> <script>
+        // --- LÓGICA DE EDICIÓN DE CINTAS A PRUEBA DE FALLOS ---
+        
+        let defaultSponsors = ["Sponsor del Club"];
+        let defaultPremios = ["1° Premio: ", "2° Premio: ", "3° Premio: ", "4° Premio: "];
 
-    <div class="cinta-premios">
-        <div class="marquee-contenido">
-            <div class="premio-item">1° Premio: [Premio 1]</div>
-            <div class="premio-item">2° Premio: [Premio 2]</div>
-            <div class="premio-item">3° Premio: [Premio 3]</div>
-            <div class="premio-item">4° Premio: [Premio 4]</div>
-            <div class="premio-item">5° Premio: [Premio 5]</div>
+        function renderizarCinta(trackId, itemsArray, claseCSS, prefijo = "") {
+            const track = document.getElementById(trackId);
+            
+            // 1. Clonar los items hasta asegurar que siempre haya suficientes para rellenar la pantalla entera.
+            // Si hay solo 1, lo multiplicamos muchas veces.
+            let itemsSeguros = [...itemsArray];
+            while(itemsSeguros.length < 15) {
+                itemsSeguros = itemsSeguros.concat(itemsArray);
+            }
 
-            <div class="premio-item">1° Premio: [Premio 1]</div>
-            <div class="premio-item">2° Premio: [Premio 2]</div>
-            <div class="premio-item">3° Premio: [Premio 3]</div>
-            <div class="premio-item">4° Premio: [Premio 4]</div>
-            <div class="premio-item">5° Premio: [Premio 5]</div>
-        </div>
-    </div>
+            // 2. Construir el HTML base
+            let itemsHTML = "";
+            itemsSeguros.forEach(item => {
+                if(item.trim() !== "") {
+                    itemsHTML += `<div class="${claseCSS}">${prefijo}${item}</div>`;
+                }
+            });
+            const bloque = `<div class="marquee-items">${itemsHTML}</div>`;
 
-    <script>
+            // 3. Reiniciar animación e inyectar exactamente DOS bloques (50% y 50%)
+            track.style.animation = 'none';
+            track.innerHTML = bloque + bloque;
+            
+            // 4. Forzar al navegador a recalcular
+            void track.offsetWidth; 
+            
+            // 5. Ajustar velocidad (unos 3 segundos por item para que sea legible siempre)
+            let velocidad = itemsSeguros.length * 5; 
+            track.style.animation = `scroll-infinito ${velocidad}s linear infinite`;
+        }
+
+        function abrirModal(idModal, textAreaId, arrayDatos) {
+            document.getElementById(idModal).classList.add('show');
+            document.getElementById(textAreaId).value = arrayDatos.join('\n');
+            document.getElementById('dropdownConfig').classList.remove('show');
+        }
+
+        function cerrarModal(idModal) {
+            document.getElementById(idModal).classList.remove('show');
+        }
+
+        function guardarSponsors() {
+            const texto = document.getElementById('textSponsors').value;
+            defaultSponsors = texto.split('\n').filter(s => s.trim() !== "");
+            if(defaultSponsors.length === 0) defaultSponsors = ["Sponsors del Club"]; // Backup por si lo borran todo
+            renderizarCinta('trackSponsors', defaultSponsors, 'sponsor-item', '✦ ');
+            cerrarModal('modalSponsors');
+        }
+
+        function guardarPremios() {
+            const texto = document.getElementById('textPremios').value;
+            defaultPremios = texto.split('\n').filter(p => p.trim() !== "");
+            if(defaultPremios.length === 0) defaultPremios = ["Premios Sorpresa"]; // Backup
+            renderizarCinta('trackPremios', defaultPremios, 'premio-item');
+            cerrarModal('modalPremios');
+        }
+
+        // Eventos del Menú
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('dropdownConfig');
+            const btn = document.getElementById('btnConfig');
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        document.getElementById('btnConfig').addEventListener('click', () => {
+            document.getElementById('dropdownConfig').classList.toggle('show');
+        });
+
+        document.getElementById('btnEditSponsors').addEventListener('click', () => {
+            abrirModal('modalSponsors', 'textSponsors', defaultSponsors);
+        });
+
+        document.getElementById('btnEditPremios').addEventListener('click', () => {
+            abrirModal('modalPremios', 'textPremios', defaultPremios);
+        });
+
+        // Inicializar cintas
+        renderizarCinta('trackSponsors', defaultSponsors, 'sponsor-item', '✦ ');
+        renderizarCinta('trackPremios', defaultPremios, 'premio-item');
+
+
+        // --- LÓGICA DEL BINGO ---
         const totalNumeros = 90; 
         let numerosDisponibles = [];
         let cantidadLlamados = 0;
