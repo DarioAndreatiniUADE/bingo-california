@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gran Bingo Solidario - Club California</title>
+    
+    <link rel="icon" href="escudo.png" type="image/png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* ESTILOS ESPECÍFICOS PARA EL BOTÓN DE VOLVER */
+        .btn-volver {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--dorado-club);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .btn-volver:hover {
+            background: var(--dorado-club);
+            color: var(--fondo-oscuro);
+            transform: translateY(-2px);
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="config-container">
+        <button class="config-menu-btn" id="btnConfig">⋮</button>
+        <div class="dropdown-menu" id="dropdownConfig">
+            <div class="dropdown-item" id="btnEditSponsors">Editar Sponsors</div>
+            <div class="dropdown-item" id="btnEditPremios">Editar Premios</div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalSponsors">
+        <div class="modal-content">
+            <h3>Editar Sponsors</h3>
+            <p>Escribe un sponsor por línea:</p>
+            <textarea id="textSponsors"></textarea>
+            <div class="modal-btns">
+                <button class="modal-btn btn-cancelar" onclick="cerrarModal('modalSponsors')">Cancelar</button>
+                <button class="modal-btn btn-guardar" onclick="guardarSponsors()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalPremios">
+        <div class="modal-content">
+            <h3>Editar Premios</h3>
+            <p>Escribe un premio por línea:</p>
+            <textarea id="textPremios"></textarea>
+            <div class="modal-btns">
+                <button class="modal-btn btn-cancelar" onclick="cerrarModal('modalPremios')">Cancelar</button>
+                <button class="modal-btn btn-guardar" onclick="guardarPremios()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <a href="index.html" class="btn-volver">🏠 Volver al Menú</a>
+
+    <div id="app-container">
+        <div class="fondo-base"></div>
+        <div class="marca-agua"></div>
+
+        <header>
+            <img src="escudo.png" alt="Escudo Club California">
+            <h1>GRAN BINGO SOLIDARIO</h1>
+            <img src="escudo.png" alt="Escudo Club California">
+        </header>
+
+        <div class="seccion-sponsors">
+            <p class="titulo-sponsors">Agradecemos a nuestros sponsors:</p>
+            <div class="cinta-sponsors">
+                <div class="marquee-track" id="trackSponsors">
+                    </div>
+            </div>
+        </div>
+
+        <main class="contenedor-principal">
+            <div class="panel-control">
+                <div class="numero-anterior">Anterior: <span id="displayAnterior">--</span></div>
+                <h2 class="titulo-panel">ÚLTIMO NÚMERO</h2>
+                <div class="display-numero" id="displayNumero">--</div>
+                <div class="botones-container">
+                    <button class="btn-generar" id="btnGenerar">Tirar Bolilla</button>
+                    <button class="btn-reiniciar" id="btnReiniciar">🔄 Nueva Partida</button>
+                </div>
+                <div class="contador" id="contador">Llamados: 0/90</div>
+            </div>
+
+            <div class="contenedor-cuadricula">
+                <div class="cuadricula" id="cuadricula"></div>
+            </div>
+        </main>
+
+        <div class="cinta-premios">
+            <div class="marquee-track" id="trackPremios">
+                </div>
+        </div>
+
+    </div> <script src="script.js"></script>
+
+</body>
+</html>

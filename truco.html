@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneo de Truco - Club California</title>
+    
+    <link rel="icon" href="escudo.png" type="image/png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* ESTILOS ESPECÍFICOS PARA EL TRUCO */
+        .truco-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .panel-bienvenida {
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(240,240,240,0.95));
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            border: 3px solid var(--dorado-club);
+            max-width: 500px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-bienvenida h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            color: var(--rojo-club);
+            margin: 0 0 10px 0;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .panel-bienvenida p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        .opciones-truco {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .btn-truco {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-continuar {
+            background: linear-gradient(135deg, var(--dorado-brillante), var(--dorado-club));
+            color: var(--fondo-oscuro);
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-continuar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.6);
+            background: linear-gradient(135deg, #fff3b0, var(--dorado-brillante));
+        }
+
+        .btn-nuevo {
+            background: linear-gradient(135deg, var(--rojo-club), var(--rojo-oscuro));
+            color: white;
+            border: 2px solid var(--rojo-oscuro);
+            box-shadow: 0 6px 15px rgba(139, 26, 26, 0.4);
+        }
+
+        .btn-nuevo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(139, 26, 26, 0.6);
+            background: linear-gradient(135deg, #a52020, var(--rojo-club));
+        }
+
+        /* Ocultar el botón de continuar por defecto */
+        #btnContinuar {
+            display: none; 
+        }
+
+        .btn-volver {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--dorado-club);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .btn-volver:hover {
+            background: var(--dorado-club);
+            color: var(--fondo-oscuro);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="btn-volver">🏠 Volver al Menú</a>
+
+    <div id="app-container">
+        <div class="fondo-base"></div>
+        <div class="marca-agua"></div>
+
+        <header>
+            <img src="escudo.png" alt="Escudo Club California">
+            <h1>TORNEO DE TRUCO</h1>
+            <img src="escudo.png" alt="Escudo Club California">
+        </header>
+
+        <main class="truco-container">
+            <div class="panel-bienvenida">
+                <h2>🃏 ¡A JUGAR! 🃏</h2>
+                <p>Administra los puntos y las rondas del torneo solidario.</p>
+                
+                <div class="opciones-truco">
+                    <button class="btn-truco btn-continuar" id="btnContinuar" onclick="continuarTorneo()">
+                        ▶️ Continuar Torneo
+                    </button>
+                    
+                    <button class="btn-truco btn-nuevo" onclick="nuevoTorneo()">
+                        ➕ Iniciar Nuevo Torneo
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Al cargar la página, verificamos si hay datos guardados
+        document.addEventListener('DOMContentLoaded', () => {
+            // Buscamos si existe la variable 'truco_equipos' en la memoria
+            const torneoGuardado = localStorage.getItem('truco_equipos');
+            
+            if (torneoGuardado) {
+                // Si existe, mostramos el botón de continuar
+                document.getElementById('btnContinuar').style.display = 'flex';
+            }
+        });
+
+        function continuarTorneo() {
+            // Redirige a la página del anotador (que crearemos en el próximo paso)
+            window.location.href = "anotador-truco.html";
+        }
+
+        function nuevoTorneo() {
+            const torneoGuardado = localStorage.getItem('truco_equipos');
+            
+            if (torneoGuardado) {
+                // Si ya hay un torneo, pedimos confirmación antes de borrar
+                if(confirm("⚠️ ATENCIÓN: Tienes un torneo en curso. Si inicias uno nuevo, los datos anteriores se borrarán. ¿Estás seguro?")) {
+                    borrarYEmpezar();
+                }
+            } else {
+                borrarYEmpezar();
+            }
+        }
+
+        function borrarYEmpezar() {
+            // Limpiamos la memoria específica del truco
+            localStorage.removeItem('truco_equipos');
+            localStorage.removeItem('truco_puntos');
+            
+            // Redirigimos a la página de configuración de equipos
+            window.location.href = "config-truco.html"; 
+        }
+    </script>
+</body>
+</html>

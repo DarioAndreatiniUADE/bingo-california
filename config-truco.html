@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Torneo - Club California</title>
+    
+    <link rel="icon" href="escudo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* --- AJUSTES DE ALINEACIÓN --- */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: var(--fondo-oscuro);
+            overflow: hidden; 
+            height: 100vh;
+        }
+
+        #app-container {
+            width: calc(100vw / 0.67);
+            height: calc(100vh / 0.67);
+            transform: scale(0.67);
+            transform-origin: top left;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .config-container {
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Comienza desde arriba en vez del centro */
+            padding-top: 120px; /* Distancia exacta para no tapar el título negro */
+            padding-bottom: 40px;
+            z-index: 10;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .panel-form {
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(240,240,240,0.95));
+            padding: 60px 40px; 
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            border: 3px solid var(--dorado-club);
+            width: 100%;
+            max-width: 900px; 
+            backdrop-filter: blur(10px);
+            margin: 0 auto; /* Solo centrado horizontal */
+        }
+
+        .panel-form h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem; 
+            color: var(--rojo-club);
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        .paso-1 {
+            text-align: center;
+        }
+
+        .input-group {
+            margin: 30px 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 1.5rem; 
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* --- MENÚ DESPLEGABLE PERSONALIZADO --- */
+        .custom-select-wrapper {
+            position: relative;
+            width: 380px;
+            margin: 0 auto;
+            user-select: none;
+        }
+
+        .custom-select {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 25px;
+            font-size: 1.4rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            color: var(--rojo-club);
+            background: #fff;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .custom-select.open .custom-select-trigger {
+            border-color: var(--rojo-club);
+            box-shadow: 0 0 10px rgba(139, 26, 26, 0.2);
+        }
+
+        .custom-options {
+            position: absolute;
+            display: block;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 2px solid var(--rojo-club);
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            margin-top: 8px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(-15px);
+            transition: all 0.3s ease;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .custom-select.open .custom-options {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .custom-option {
+            display: block;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #444;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        .custom-option:last-child {
+            border-bottom: none;
+        }
+
+        .custom-option:hover {
+            background: #f8f9fa;
+            color: var(--rojo-club);
+        }
+
+        /* --- PASO 2: Nombres de jugadores --- */
+        .paso-2 {
+            display: none; 
+        }
+
+        .grid-equipos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 25px;
+            margin-top: 20px;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        .grid-equipos::-webkit-scrollbar { width: 10px; }
+        .grid-equipos::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .grid-equipos::-webkit-scrollbar-thumb { background: var(--dorado-club); border-radius: 4px; }
+
+        .card-equipo {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 6px solid var(--rojo-club);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .card-equipo h3 {
+            margin: 0 0 15px 0;
+            color: var(--rojo-oscuro);
+            font-size: 1.4rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .card-equipo h3 span {
+            color: #888;
+            font-size: 1.1rem;
+            font-weight: normal;
+        }
+
+        .card-equipo input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            text-align: center;
+        }
+        
+        .card-equipo input:focus {
+            outline: none;
+            border-color: var(--rojo-club);
+        }
+
+        .btn-accion {
+            background: linear-gradient(135deg, var(--rojo-club), var(--rojo-oscuro));
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            font-size: 1.5rem; 
+            padding: 20px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 40px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(139, 26, 26, 0.4);
+            text-transform: uppercase;
+        }
+
+        .btn-accion:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(139, 26, 26, 0.6);
+        }
+
+        .btn-volver {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--dorado-club);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            font-size: 1.4rem; 
+            padding: 15px 25px; 
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .btn-volver:hover {
+            background: var(--dorado-club);
+            color: var(--fondo-oscuro);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <div class="fondo-base"></div>
+        <div class="marca-agua"></div>
+
+        <a href="truco.html" class="btn-volver">⬅ Volver</a>
+
+        <header>
+            <img src="escudo.png" alt="Escudo Club California">
+            <h1>TORNEO DE TRUCO</h1>
+            <img src="escudo.png" alt="Escudo Club California">
+        </header>
+
+        <main class="config-container">
+            <div class="panel-form">
+                
+                <div class="paso-1" id="paso1">
+                    <h2>NUEVO TORNEO</h2>
+                    <div class="input-group">
+                        <label>¿Cuántos equipos participan?</label>
+                        
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select">
+                                <div class="custom-select-trigger">
+                                    <span id="selectText">Seleccionar...</span>
+                                </div>
+                                <div class="custom-options">
+                                    <span class="custom-option" data-value="4">4 Equipos (Semifinales)</span>
+                                    <span class="custom-option" data-value="8">8 Equipos (Cuartos de final)</span>
+                                    <span class="custom-option" data-value="16">16 Equipos (Octavos de final)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectEquipos" value="0">
+
+                    </div>
+                    <button class="btn-accion" onclick="generarFormularios()">Siguiente Paso ➡</button>
+                </div>
+
+                <div class="paso-2" id="paso2">
+                    <h2>JUGADORES</h2>
+                    <p style="text-align: center; color: #666; margin-top: -10px; font-size: 1.2rem;">Ingresa los nombres de las parejas.</p>
+                    
+                    <div class="grid-equipos" id="contenedorEquipos">
+                        </div>
+
+                    <button class="btn-accion" onclick="guardarYCrearLlave()">🏆 ¡Generar Llave del Torneo!</button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- LÓGICA DEL MENÚ DESPLEGABLE PERSONALIZADO ---
+        document.querySelector('.custom-select-wrapper').addEventListener('click', function() {
+            document.querySelector('.custom-select').classList.toggle('open');
+        });
+
+        for (const option of document.querySelectorAll(".custom-option")) {
+            option.addEventListener('click', function() {
+                if (!this.classList.contains('selected')) {
+                    this.parentNode.querySelector('.custom-option.selected')?.classList.remove('selected');
+                    this.classList.add('selected');
+                    document.getElementById('selectText').textContent = this.textContent;
+                    document.getElementById('selectEquipos').value = this.getAttribute('data-value');
+                }
+            });
+        }
+
+        window.addEventListener('click', function(e) {
+            const select = document.querySelector('.custom-select');
+            if (!select.contains(e.target)) {
+                select.classList.remove('open');
+            }
+        });
+
+        // --- LÓGICA DE LA CONFIGURACIÓN ---
+        let cantidadEquipos = 0;
+
+        function generarFormularios() {
+            cantidadEquipos = parseInt(document.getElementById('selectEquipos').value);
+
+            if (cantidadEquipos === 0) {
+                alert("Por favor, selecciona la cantidad de equipos en el menú desplegable.");
+                return;
+            }
+
+            document.getElementById('paso1').style.display = 'none';
+            document.getElementById('paso2').style.display = 'block';
+
+            const contenedor = document.getElementById('contenedorEquipos');
+            contenedor.innerHTML = ''; 
+
+            for (let i = 1; i <= cantidadEquipos; i++) {
+                const nombreEquipo = `California ${i}`;
+                const card = `
+                    <div class="card-equipo">
+                        <h3>${nombreEquipo} <span>(Equipo ${i})</span></h3>
+                        <input type="text" id="eq${i}_jug1" placeholder="Nombre Jugador 1" required>
+                        <input type="text" id="eq${i}_jug2" placeholder="Nombre Jugador 2" required>
+                    </div>
+                `;
+                contenedor.innerHTML += card;
+            }
+        }
+
+        function guardarYCrearLlave() {
+            let equipos = [];
+            let todosCompletos = true;
+
+            for (let i = 1; i <= cantidadEquipos; i++) {
+                const j1 = document.getElementById(`eq${i}_jug1`).value.trim();
+                const j2 = document.getElementById(`eq${i}_jug2`).value.trim();
+
+                if (j1 === "" || j2 === "") {
+                    todosCompletos = false;
+                    break;
+                }
+
+                equipos.push({
+                    id: i,
+                    nombre: `California ${i}`,
+                    jugadores: `${j1} y ${j2}`
+                });
+            }
+
+            if (!todosCompletos) {
+                alert("Por favor, completa los nombres de todos los jugadores.");
+                return;
+            }
+
+            equipos = equipos.sort(() => Math.random() - 0.5);
+            
+            localStorage.removeItem('truco_bracket');
+            localStorage.setItem('truco_equipos', JSON.stringify(equipos));
+            
+            window.location.href = "llave-truco.html";
+        }
+    </script>
+</body>
+</html>
