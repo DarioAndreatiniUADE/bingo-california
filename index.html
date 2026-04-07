@@ -6,225 +6,198 @@
     <title>Eventos Solidarios - Club California</title>
     
     <link rel="icon" href="escudo.png" type="image/png">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     
     <style>
-        /* --- ESTILOS DE FUENTES Y COLORES (Basados en las otras páginas) --- */
-        :root {
-            --rojo-club: #8B1A1A; 
-            --rojo-oscuro: #5a0b0b;
-            --dorado-club: #D4AF37; 
-            --dorado-brillante: #FFE87C;
-            --fondo-oscuro: #111111;
-            --fondo-claro: #f0f2f5;
+        /* --- AJUSTES DE ESTRUCTURA --- */
+        html, body { 
+            font-family: 'Montserrat', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            color: #333; 
+            height: 100vh; 
+            width: 100vw; 
+            overflow: hidden; 
+            background-color: var(--fondo-claro); 
+            display: flex; 
+            flex-direction: column; 
         }
-
-        /* --- AJUSTES DE PANTALLA COMPLETA Y BLOQUEO DE SCROLL --- */
-        html, body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #333;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden; /* PROHÍBE LA BARRA DE DESPLAZAMIENTO */
-            background-color: var(--fondo-claro);
-        }
-
-        /* --- CAPAS DE FONDO CON LA MARCA DE AGUA DEL 100º ANIVERSARIO --- */
-        .marca-agua {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: 
-                radial-gradient(circle at center, rgba(255,255,255,0.8), rgba(240,242,245,0.8)),
-                url("fondo_centenario.png"); /* Asegúrate de que esta imagen exista */
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover; 
-            opacity: 0.15; /* Sutil marca de agua */
-            z-index: -1; 
-        }
-
-        /* --- CONTENEDOR DE CENTRADO EXACTO --- */
-        #main-wrapper {
-            display: flex;
-            justify-content: center; /* Centrado horizontal */
-            align-items: center; /* Centrado vertical */
-            height: 100vh;
-            width: 100vw;
-            position: relative;
-        }
-
-        /* --- CONTENEDOR DE ESCALADO (La magia de agrandar todo) --- */
-        /* Aumentamos el tamaño raw y luego lo escalamos al 1.25 (125%) */
-        #scaled-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            transform: scale(0.85); /* AGRANDA TODO UN 25% */
-            transform-origin: center center;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* --- LOGO Y TÍTULOS --- */
-        .logo-club {
-            height: 120px;
-            filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.3));
-            animation: flotar 3s ease-in-out infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes flotar {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            margin: 0 0 15px 0;
-            font-size: 5rem; /* Título imponente */
-            letter-spacing: 4px;
-            background: linear-gradient(to right, var(--rojo-oscuro), var(--rojo-club));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            line-height: 1;
-        }
-
-        /* La caja blanca de texto */
-        .leyenda {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #444;
-            margin: 0 0 40px 0; 
-            line-height: 1.6;
-            background: rgba(255,255,255,0.95);
-            padding: 30px 50px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            border-bottom: 5px solid var(--dorado-club);
-            max-width: 800px;
-        }
-
-        .leyenda span {
-            color: var(--rojo-club);
-            font-weight: 800;
-        }
-
-        /* --- MENÚ DE OPCIONES (TARJETAS) --- */
-        .menu-opciones {
-            display: flex;
-            gap: 50px; /* Separación amplia */
-            justify-content: center;
+        
+        .marca-agua { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at center, rgba(255,255,255,0.8), rgba(240,242,245,0.8)), url("fondo_centenario.png"); background-repeat: no-repeat; background-position: center; background-size: cover; opacity: 0.15; z-index: -1; }
+        
+        #sponsors-placeholder {
             width: 100%;
+            z-index: 50;
+            flex-shrink: 0; 
         }
 
-        .tarjeta-opcion {
-            background: linear-gradient(145deg, var(--fondo-oscuro), #222);
-            border: 3px solid var(--dorado-club);
-            border-radius: 25px;
-            width: 380px;
-            height: 250px; /* Tarjetas más grandes */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 20px rgba(212, 175, 55, 0.05);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
+        #main-wrapper { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            flex: 1; 
+            width: 100vw; 
+            position: relative; 
         }
-
-        /* Efecto de brillo al pasar el mouse */
-        .tarjeta-opcion::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-            transform: skewX(-20deg);
-            transition: all 0.5s ease;
+        
+        #scaled-content { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            transform: scale(0.85); 
+            transform-origin: center center; 
+            position: relative; 
+            z-index: 10; 
+            margin-top: -60px; /* <--- ACÁ ESTÁ LA MAGIA PARA SUBIRLO UN POQUITO */
         }
+        
+        .logo-club { height: 120px; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.3)); animation: flotar 3s ease-in-out infinite; margin-bottom: 20px; }
+        @keyframes flotar { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        
+        h1 { font-family: 'Bebas Neue', sans-serif; margin: 0 0 15px 0; font-size: 5rem; letter-spacing: 4px; background: linear-gradient(to right, var(--rojo-oscuro), var(--rojo-club)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); line-height: 1; }
+        
+        .leyenda { font-size: 1.4rem; font-weight: 600; color: #444; margin: 0 0 40px 0; line-height: 1.6; background: rgba(255,255,255,0.95); padding: 30px 50px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border-bottom: 5px solid var(--dorado-club); max-width: 800px; }
+        .leyenda span { color: var(--rojo-club); font-weight: 800; }
+        
+        .menu-opciones { display: flex; gap: 50px; justify-content: center; width: 100%; }
+        .tarjeta-opcion { background: linear-gradient(145deg, var(--fondo-oscuro), #222); border: 3px solid var(--dorado-club); border-radius: 25px; width: 380px; height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 20px rgba(212, 175, 55, 0.05); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
+        .tarjeta-opcion::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); transform: skewX(-20deg); transition: all 0.5s ease; }
+        .tarjeta-opcion:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 25px 45px rgba(0,0,0,0.5), inset 0 0 30px rgba(212, 175, 55, 0.2); border-color: var(--dorado-brillante); }
+        .tarjeta-opcion:hover::before { left: 150%; }
+        .tarjeta-icono { font-size: 6rem; margin-bottom: 15px; }
+        .tarjeta-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; letter-spacing: 2px; color: var(--dorado-brillante); margin: 0; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
 
-        .tarjeta-opcion:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.5), inset 0 0 30px rgba(212, 175, 55, 0.2);
-            border-color: var(--dorado-brillante);
+        /* --- MODIFICACIONES ESPECÍFICAS DE INDEX --- */
+        .config-container {
+            position: fixed !important;
+            top: auto !important;
+            bottom: 30px !important;
+            right: 30px !important;
+            z-index: 1000;
         }
-
-        .tarjeta-opcion:hover::before {
-            left: 150%;
+        .dropdown-menu {
+            top: auto !important;
+            bottom: 60px !important; 
         }
-
-        .tarjeta-icono {
-            font-size: 6rem; /* Iconos más grandes */
-            margin-bottom: 15px;
+        .seccion-sponsors {
+            padding: 5px 0 10px 0 !important;
+            border-top: none !important;
+            border-bottom: 3px solid var(--dorado-club) !important;
         }
-
-        .tarjeta-titulo {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 3.2rem; /* Texto más grande */
-            letter-spacing: 2px;
-            color: var(--dorado-brillante);
-            margin: 0;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        .sponsor-item {
+            font-size: 1.5rem !important;
         }
-
-        /* Si usas imágenes en vez de emojis */
-        .tarjeta-icono img {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            margin-bottom: 15px;
-        }
-
     </style>
 </head>
 <body>
 
     <div class="marca-agua"></div>
 
-    <div id="main-wrapper">
-        
-        <div id="scaled-content">
-            
-            <img src="escudo.png" alt="Escudo Club California" class="logo-club">
+    <div id="sponsors-placeholder"></div>
 
+    <div id="main-wrapper">
+        <div id="scaled-content">
+            <img src="escudo.png" alt="Escudo Club California" class="logo-club">
             <h1>CLUB CALIFORNIA</h1>
-            
             <div class="leyenda">
                 ¡Bienvenidos a nuestro gran evento solidario! <br>
                 Agradecemos de corazón tu participación. Todo lo recaudado en estos juegos está destinado a <span>ayudar a nuestro club y seguir creciendo juntos</span>.
             </div>
-
             <div class="menu-opciones">
-                
                 <a href="bingo.html" class="tarjeta-opcion">
                     <span class="tarjeta-icono">🎱</span>
                     <h2 class="tarjeta-titulo">GRAN BINGO</h2>
                 </a>
-
                 <a href="truco.html" class="tarjeta-opcion">
                     <span class="tarjeta-icono">🃏</span>
                     <h2 class="tarjeta-titulo">TORNEO DE TRUCO</h2>
                 </a>
-
             </div>
         </div>
     </div>
 
+    <div class="config-container">
+        <button class="config-menu-btn" id="btnConfig">⋮</button>
+        <div class="dropdown-menu" id="dropdownConfig">
+            <div class="dropdown-item" onclick="abrirModal('modalSponsors', 'textSponsors', 'bingo_sponsors', ['Sponsor 1', 'Sponsor 2'])">Editar Sponsors</div>
+            <div class="dropdown-item" onclick="abrirModal('modalPremiosBingo', 'textPremiosBingo', 'bingo_premios', ['1° Premio Bingo', '2° Premio Bingo'])">Editar Premios Bingo</div>
+            <div class="dropdown-item" onclick="abrirModal('modalPremiosTruco', 'textPremiosTruco', 'truco_premios', ['1° Premio Truco', '2° Premio Truco'])">Editar Premios Truco</div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalSponsors">
+        <div class="modal-content">
+            <h3>Editar Sponsors (Global)</h3>
+            <textarea id="textSponsors"></textarea>
+            <div class="modal-btns">
+                <button class="modal-btn btn-cancelar" onclick="cerrarModal('modalSponsors')">Cancelar</button>
+                <button class="modal-btn btn-guardar" onclick="guardarDatos('modalSponsors', 'textSponsors', 'bingo_sponsors')">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalPremiosBingo">
+        <div class="modal-content">
+            <h3>Editar Premios (Bingo)</h3>
+            <textarea id="textPremiosBingo"></textarea>
+            <div class="modal-btns">
+                <button class="modal-btn btn-cancelar" onclick="cerrarModal('modalPremiosBingo')">Cancelar</button>
+                <button class="modal-btn btn-guardar" onclick="guardarDatos('modalPremiosBingo', 'textPremiosBingo', 'bingo_premios')">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalPremiosTruco">
+        <div class="modal-content">
+            <h3>Editar Premios (Truco)</h3>
+            <textarea id="textPremiosTruco"></textarea>
+            <div class="modal-btns">
+                <button class="modal-btn btn-cancelar" onclick="cerrarModal('modalPremiosTruco')">Cancelar</button>
+                <button class="modal-btn btn-guardar" onclick="guardarDatos('modalPremiosTruco', 'textPremiosTruco', 'truco_premios')">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="sponsors.js"></script>
+    <script>
+        document.getElementById('btnConfig').addEventListener('click', () => {
+            document.getElementById('dropdownConfig').classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('btnConfig').contains(e.target) && !document.getElementById('dropdownConfig').contains(e.target)) {
+                document.getElementById('dropdownConfig').classList.remove('show');
+            }
+        });
+
+        function abrirModal(idModal, idTextarea, storageKey, defaults) {
+            const data = JSON.parse(localStorage.getItem(storageKey)) || defaults;
+            document.getElementById(idTextarea).value = data.join('\n');
+            document.getElementById(idModal).classList.add('show');
+            document.getElementById('dropdownConfig').classList.remove('show');
+        }
+
+        function cerrarModal(idModal) {
+            document.getElementById(idModal).classList.remove('show');
+        }
+
+        function guardarDatos(idModal, idTextarea, storageKey) {
+            const texto = document.getElementById(idTextarea).value;
+            const arrayDatos = texto.split('\n').filter(s => s.trim() !== "");
+            localStorage.setItem(storageKey, JSON.stringify(arrayDatos));
+            cerrarModal(idModal);
+            
+            if(storageKey === 'bingo_sponsors') {
+                location.reload();
+            } else {
+                alert("¡Premios guardados correctamente!");
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,101 +1,34 @@
-// --- LÓGICA DE EDICIÓN DE CINTAS A PRUEBA DE FALLOS ---
-        
-// Intentamos cargar los datos desde el localStorage, si no hay, usamos los por defecto
-let defaultSponsors = JSON.parse(localStorage.getItem('bingo_sponsors')) || ["Dario", "Roberto", "Lucas"];
-let defaultPremios = JSON.parse(localStorage.getItem('bingo_premios')) || ["1° Premio: Pelota", "2° Premio: Make Up", "3° Premio: Juego de Mesa", "4° Premio: Fantasma"];
+// =========================================================
+// 1. DIBUJAR PREMIOS DEL BINGO (Lee de la memoria)
+// =========================================================
+const premiosBingo = JSON.parse(localStorage.getItem('bingo_premios')) || ["1° Premio Sorpresa", "2° Premio Sorpresa"];
 
-function renderizarCinta(trackId, itemsArray, claseCSS, prefijo = "") {
-    const track = document.getElementById(trackId);
-    
-    let itemsSeguros = [...itemsArray];
-    while(itemsSeguros.length < 15) {
-        itemsSeguros = itemsSeguros.concat(itemsArray);
+const trackPremios = document.getElementById('trackPremios');
+if (trackPremios) {
+    // Clonamos para que no queden huecos blancos
+    let itemsSeguros = [...premiosBingo];
+    while(itemsSeguros.length < 10) {
+        itemsSeguros = itemsSeguros.concat(premiosBingo);
     }
 
     let itemsHTML = "";
     itemsSeguros.forEach(item => {
         if(item.trim() !== "") {
-            itemsHTML += `<div class="${claseCSS}">${prefijo}${item}</div>`;
+            itemsHTML += `<div class="premio-item">${item}</div>`;
         }
     });
+    
     const bloque = `<div class="marquee-items">${itemsHTML}</div>`;
-
-    let cantidadBloques = 2; 
-    if(itemsArray.length < 5) cantidadBloques = 6;
-    if(itemsArray.length < 3) cantidadBloques = 10;
-
-    track.style.setProperty('--bloques', cantidadBloques);
-
-    track.style.animation = 'none';
-    track.innerHTML = bloque.repeat(cantidadBloques);
+    trackPremios.style.setProperty('--bloques', 2);
+    trackPremios.innerHTML = bloque.repeat(2);
     
-    void track.offsetWidth; 
-    
-    let velocidad = itemsSeguros.length * 3; 
-    track.style.animation = `scroll-infinito ${velocidad}s linear infinite`;
+    let velocidad = itemsSeguros.length * 5; 
+    trackPremios.style.animation = `scroll-infinito ${velocidad}s linear infinite`;
 }
 
-function abrirModal(idModal, textAreaId, arrayDatos) {
-    document.getElementById(idModal).classList.add('show');
-    document.getElementById(textAreaId).value = arrayDatos.join('\n');
-    document.getElementById('dropdownConfig').classList.remove('show');
-}
-
-function cerrarModal(idModal) {
-    document.getElementById(idModal).classList.remove('show');
-}
-
-function guardarSponsors() {
-    const texto = document.getElementById('textSponsors').value;
-    defaultSponsors = texto.split('\n').filter(s => s.trim() !== "");
-    if(defaultSponsors.length === 0) defaultSponsors = ["Sponsors del Club"]; 
-    
-    // GUARDAR EN MEMORIA
-    localStorage.setItem('bingo_sponsors', JSON.stringify(defaultSponsors));
-    
-    renderizarCinta('trackSponsors', defaultSponsors, 'sponsor-item', '✦ ');
-    cerrarModal('modalSponsors');
-}
-
-function guardarPremios() {
-    const texto = document.getElementById('textPremios').value;
-    defaultPremios = texto.split('\n').filter(p => p.trim() !== "");
-    if(defaultPremios.length === 0) defaultPremios = ["Premios Sorpresa"]; 
-    
-    // GUARDAR EN MEMORIA
-    localStorage.setItem('bingo_premios', JSON.stringify(defaultPremios));
-    
-    renderizarCinta('trackPremios', defaultPremios, 'premio-item');
-    cerrarModal('modalPremios');
-}
-
-// Eventos del Menú
-document.addEventListener('click', (e) => {
-    const dropdown = document.getElementById('dropdownConfig');
-    const btn = document.getElementById('btnConfig');
-    if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.classList.remove('show');
-    }
-});
-
-document.getElementById('btnConfig').addEventListener('click', () => {
-    document.getElementById('dropdownConfig').classList.toggle('show');
-});
-
-document.getElementById('btnEditSponsors').addEventListener('click', () => {
-    abrirModal('modalSponsors', 'textSponsors', defaultSponsors);
-});
-
-document.getElementById('btnEditPremios').addEventListener('click', () => {
-    abrirModal('modalPremios', 'textPremios', defaultPremios);
-});
-
-// Inicializar cintas
-renderizarCinta('trackSponsors', defaultSponsors, 'sponsor-item', '✦ ');
-renderizarCinta('trackPremios', defaultPremios, 'premio-item');
-
-
-// --- LÓGICA DEL BINGO (CON GUARDADO DE PARTIDA) ---
+// =========================================================
+// 2. LÓGICA DEL BINGO (BOLILLERO Y GUARDADO)
+// =========================================================
 const totalNumeros = 90; 
 // Cargamos el estado anterior si existe
 let numerosDisponibles = JSON.parse(localStorage.getItem('bingo_disponibles'));

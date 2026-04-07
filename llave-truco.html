@@ -12,364 +12,400 @@
     <link rel="stylesheet" href="styles.css">
 
     <style>
-        /* --- ESTILOS BASE Y CENTRADO --- */
-        .llave-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 40px 20px;
-            z-index: 10;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            box-sizing: border-box;
-        }
+        /* --- ESTILOS BASE Y APILAMIENTO FLEXIBLE --- */
+        body { overflow: hidden; margin: 0; padding: 0; background-color: var(--fondo-oscuro); display: flex; flex-direction: column; height: 100vh; }
+        
+        /* --- REDUCCIÓN DE GROSORES PARA GANAR ESPACIO VISUAL --- */
+        header { padding: 5px 20px !important; z-index: 60; }
+        header h1 { font-size: 3rem !important; margin: 0 !important; }
+        header img { height: 50px !important; }
 
-        .titulo-llave {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 4rem;
-            color: var(--dorado-brillante);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            margin: 0 0 30px 0;
-            letter-spacing: 2px;
-        }
+        .seccion-sponsors { padding: 5px 0 8px 0 !important; border-bottom: 2px solid var(--dorado-club) !important; }
+        .titulo-sponsors { font-size: 0.8rem !important; margin: 0 0 2px 0 !important; }
+        .sponsor-item { font-size: 1.4rem !important; }
 
-        /* --- BOTÓN DE VOLVER MÁS GRANDE --- */
-        .btn-volver {
-            position: absolute;
-            top: 30px;
-            left: 40px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid var(--dorado-club);
-            border-radius: 10px;
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: bold;
-            font-size: 1.4rem;
-            padding: 15px 25px;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
+        .cinta-premios { padding: 8px 0 !important; border-top: 2px solid var(--dorado-club) !important; }
+        .premio-item { padding: 5px 20px !important; font-size: 1.5rem !important; border-width: 1px !important; }
 
-        .btn-volver:hover {
-            background: var(--dorado-club);
-            color: var(--fondo-oscuro);
-            transform: translateY(-2px);
-        }
-
-        /* --- CONTENEDOR DEL BRACKET --- */
-        .bracket-wrapper {
-            display: flex;
-            gap: 50px; 
-            justify-content: center;
-            align-items: center; 
+        /* --- ZONA DE LA LLAVE --- */
+        .llave-container { 
+            flex: 1; /* TOMA TODO EL ESPACIO QUE SOBRE */
+            position: relative; 
+            width: 100%; 
+            overflow: hidden; 
             background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            border: 3px solid var(--dorado-club);
-            backdrop-filter: blur(10px);
-            min-width: 800px;
+            background-image: radial-gradient(rgba(212, 175, 55, 0.2) 1px, transparent 0);
+            background-size: 40px 40px;
         }
 
-        .ronda {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around; 
-            gap: 20px;
-            height: 100%; 
-        }
+        .btn-volver { position: absolute; top: 15px; left: 20px; background: rgba(0, 0, 0, 0.7); border: 2px solid var(--dorado-club); border-radius: 8px; color: white; font-family: 'Montserrat', sans-serif; font-weight: bold; font-size: 1.1rem; padding: 8px 15px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 10px; z-index: 1000; transition: all 0.3s ease; }
+        .btn-volver:hover { background: var(--dorado-club); color: var(--fondo-oscuro); transform: translateY(-2px); }
 
-        .titulo-ronda {
-            text-align: center;
-            font-family: 'Bebas Neue', sans-serif;
-            color: var(--rojo-club);
-            font-size: 2rem;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-        }
+        .controles-vista { position: absolute; bottom: 15px; right: 20px; display: flex; gap: 10px; z-index: 1000; background: rgba(0, 0, 0, 0.8); padding: 8px; border-radius: 10px; border: 2px solid var(--dorado-club); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .btn-control { background: var(--rojo-club); color: white; border: none; border-radius: 5px; width: 35px; height: 35px; font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
+        .btn-control:hover { background: var(--rojo-oscuro); transform: scale(1.1); }
+        .btn-control.reset { width: auto; padding: 0 15px; font-size: 0.9rem; font-family: 'Montserrat', sans-serif; }
+
+        /* --- CONTENEDOR DEL ÁRBOL --- */
+        #arbol-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1); transform-origin: center center; transition: transform 0.1s ease-out; cursor: grab; display: flex; align-items: center; justify-content: center; gap: 40px; padding: 50px; min-width: max-content; }
+        #arbol-wrapper:active { cursor: grabbing; }
+
+        .rama { display: flex; gap: 40px; align-items: center; }
+        .rama-izquierda { flex-direction: row; }
+        .rama-derecha { flex-direction: row-reverse; } 
+        
+        .columna-ronda { display: flex; flex-direction: column; justify-content: space-around; gap: 20px; height: 100%; }
+        .titulo-ronda { text-align: center; font-family: 'Bebas Neue', sans-serif; color: var(--rojo-club); font-size: 1.4rem; letter-spacing: 1px; margin-bottom: 10px; text-transform: uppercase; }
+
+        /* --- ZONA CENTRAL --- */
+        .zona-central { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; min-width: 300px; position: relative; z-index: 10; }
+        .escudo-central { height: 140px; filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.4)); animation: flotar-suave 4s ease-in-out infinite; }
+        @keyframes flotar-suave { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
 
         /* --- PARTIDOS --- */
-        .partido {
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            min-width: 250px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+        .partido-contenedor { position: relative; display: flex; align-items: center; }
+        .partido { background: white; border: 2px solid #ccc; border-radius: 10px; min-width: 200px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); overflow: hidden; display: flex; flex-direction: column; z-index: 2; position: relative; }
+        .partido.final { border: 3px solid var(--dorado-club); transform: scale(1.1); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4); }
+        .partido.tercer-puesto { border: 2px dashed #888; background: #fdfdfd; margin-top: 20px; }
 
-        .equipo {
-            padding: 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-            border-bottom: 1px solid #eee;
-            position: relative;
-        }
+        .titulo-partido-especial { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: #555; text-align: center; background: #eee; padding: 3px 0; margin: 0; border-bottom: 1px solid #ccc; }
+        .titulo-final { color: var(--fondo-oscuro); background: var(--dorado-brillante); }
 
-        .equipo:last-child {
-            border-bottom: none;
-        }
+        .equipo { padding: 8px 15px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #eee; position: relative; user-select: none; }
+        .equipo:last-child { border-bottom: none; } 
+        .equipo:hover { background: #f0f0f0; } 
+        .equipo.vacio { color: #aaa; font-style: italic; cursor: not-allowed; background: #f9f9f9; }
+        .equipo.ganador { background: linear-gradient(135deg, var(--dorado-brillante), var(--dorado-club)); color: var(--fondo-oscuro); font-weight: bold; }
+        
+        .equipo-nombre { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; margin: 0; display: block; }
+        .equipo-jugadores { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: #666; display: block; margin-top: 2px; font-weight: 600; }
+        .equipo.ganador .equipo-jugadores { color: var(--rojo-oscuro); }
 
-        .equipo:hover {
-            background: #f8f9fa;
-        }
+        /* --- LÍNEAS CONECTORAS --- */
+        .linea-out-izq { position: absolute; right: -20px; top: 50%; width: 20px; height: 2px; background: var(--rojo-club); z-index: 0; }
+        .linea-in-izq { position: absolute; left: -20px; top: 50%; width: 20px; height: 2px; background: var(--rojo-club); z-index: 0; }
+        .linea-vertical-izq { position: absolute; right: -20px; top: 50%; width: 2px; height: calc(100% + 20px); background: var(--rojo-club); z-index: 0; }
 
-        .equipo.vacio {
-            color: #aaa;
-            font-style: italic;
-            cursor: not-allowed;
-            background: #f9f9f9;
-        }
+        .linea-out-der { position: absolute; left: -20px; top: 50%; width: 20px; height: 2px; background: var(--rojo-club); z-index: 0; }
+        .linea-in-der { position: absolute; right: -20px; top: 50%; width: 20px; height: 2px; background: var(--rojo-club); z-index: 0; }
+        .linea-vertical-der { position: absolute; left: -20px; top: 50%; width: 2px; height: calc(100% + 20px); background: var(--rojo-club); z-index: 0; }
 
-        .equipo.ganador {
-            background: linear-gradient(135deg, var(--dorado-brillante), var(--dorado-club));
-            color: var(--fondo-oscuro);
-            font-weight: bold;
-        }
+        .linea-final-izq { position: absolute; right: 100%; top: 50%; width: 40px; height: 3px; background: var(--dorado-club); z-index: 0; }
+        .linea-final-der { position: absolute; left: 100%; top: 50%; width: 40px; height: 3px; background: var(--dorado-club); z-index: 0; }
 
-        .equipo-nombre {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.8rem;
-            margin: 0;
-            display: block;
-        }
+        /* --- CAJA DEL CAMPEÓN --- */
+        .campeon-box { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); text-align: center; padding: 15px 30px; background: linear-gradient(135deg, var(--rojo-club), var(--rojo-oscuro)); color: white; border-radius: 15px; border: 3px solid var(--dorado-brillante); box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); display: none; z-index: 2000; }
+        .campeon-box.show { display: block; animation: dropIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes dropIn { 0% { transform: translate(-50%, -100%); opacity: 0; } 100% { transform: translate(-50%, 0); opacity: 1; } }
+        .btn-finalizar { background: var(--fondo-oscuro); color: var(--dorado-brillante); border: 2px solid var(--dorado-brillante); padding: 8px 20px; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: all 0.3s; text-transform: uppercase; }
+        .btn-finalizar:hover { background: var(--dorado-brillante); color: var(--fondo-oscuro); }
 
-        .equipo-jugadores {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-            color: #666;
-            display: block;
-            margin-top: 2px;
-            font-weight: 600;
-        }
-
-        .equipo.ganador .equipo-jugadores {
-            color: var(--rojo-oscuro);
-        }
-
-        /* Botón de campeón */
-        .campeon-box {
-            text-align: center;
-            padding: 30px;
-            background: linear-gradient(135deg, var(--rojo-club), var(--rojo-oscuro));
-            color: white;
-            border-radius: 15px;
-            border: 3px solid var(--dorado-brillante);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
-            display: none;
-            margin-top: 40px;
-        }
-
-        .campeon-box.show {
-            display: block;
-            animation: zoomIn 0.5s ease;
-        }
-
-        @keyframes zoomIn {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
     </style>
 </head>
 <body>
 
-    <div id="app-container">
-        <div class="fondo-base"></div>
-        <div class="marca-agua"></div>
+    <header style="flex-shrink: 0;">
+        <img src="escudo.png" alt="Escudo Club California">
+        <h1>TORNEO DE TRUCO</h1>
+        <img src="escudo.png" alt="Escudo Club California">
+    </header>
 
-        <a href="truco.html" class="btn-volver">⬅ Volver al Menú</a>
+    <div id="sponsors-placeholder" style="flex-shrink: 0; z-index: 50;"></div>
 
-        <header>
-            <img src="escudo.png" alt="Escudo Club California">
-            <h1>TORNEO DE TRUCO</h1>
-            <img src="escudo.png" alt="Escudo Club California">
-        </header>
+    <main class="llave-container" id="llaveContainer">
+        
+        <a href="truco.html" class="btn-volver">⬅ Volver</a>
 
-        <main class="llave-container">
-            <h2 class="titulo-llave">LLAVE DEL TORNEO</h2>
-            
-            <div class="bracket-wrapper" id="bracketWrapper">
-                </div>
+        <div class="campeon-box" id="campeonBox">
+            <h2 style="font-family: 'Bebas Neue'; font-size: 2.5rem; margin: 0; color: var(--dorado-brillante);">🏆 ¡CAMPEÓN! 🏆</h2>
+            <h3 id="nombreCampeon" style="font-size: 1.8rem; margin: 5px 0;"></h3>
+            <p id="jugadoresCampeon" style="font-size: 1.1rem; margin: 0;"></p>
+            <button class="btn-finalizar" onclick="finalizarTorneo()">Finalizar Torneo</button>
+        </div>
 
-            <div class="campeon-box" id="campeonBox">
-                <h2 style="font-family: 'Bebas Neue'; font-size: 4rem; margin: 0; color: var(--dorado-brillante);">🏆 ¡TENEMOS CAMPEÓN! 🏆</h2>
-                <h3 id="nombreCampeon" style="font-size: 2.5rem; margin: 10px 0;"></h3>
-                <p id="jugadoresCampeon" style="font-size: 1.5rem; margin: 0;"></p>
+        <div class="controles-vista">
+            <button class="btn-control" onclick="ajustarZoom(0.1)" title="Acercar">+</button>
+            <button class="btn-control reset" onclick="resetearVista()" title="Centrar">CENTRAR</button>
+            <button class="btn-control" onclick="ajustarZoom(-0.1)" title="Alejar">-</button>
+        </div>
+
+        <div id="arbol-wrapper">
             </div>
-        </main>
+
+    </main>
+
+    <div class="cinta-premios" style="flex-shrink: 0; z-index: 50;">
+        <div class="marquee-track" id="trackPremiosTruco"></div>
     </div>
 
+    <script src="sponsors.js"></script>
+    <script src="premios-truco.js"></script>
+
     <script>
-        // Cargamos los equipos iniciales sorteados
-        const equiposBase = JSON.parse(localStorage.getItem('truco_equipos'));
+        // ==========================================
+        // 1. LÓGICA DE PAN & ZOOM
+        // ==========================================
+        const container = document.getElementById('llaveContainer');
+        const wrapper = document.getElementById('arbol-wrapper');
         
-        if (!equiposBase || equiposBase.length === 0) {
-            window.location.href = "truco.html";
+        let isDragging = false;
+        let startX, startY, initialX = 0, initialY = 0;
+        let currentZoom = 1;
+
+        container.addEventListener('mousedown', (e) => {
+            if(e.target.closest('.equipo') || e.target.closest('button')) return;
+            isDragging = true;
+            startX = e.clientX - initialX;
+            startY = e.clientY - initialY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            initialX = e.clientX - startX;
+            initialY = e.clientY - startY;
+            actualizarTransformacion();
+        });
+
+        window.addEventListener('mouseup', () => { isDragging = false; });
+        window.addEventListener('mouseleave', () => { isDragging = false; });
+
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            ajustarZoom(e.deltaY > 0 ? -0.05 : 0.05);
+        });
+
+        function ajustarZoom(delta) {
+            currentZoom += delta;
+            if(currentZoom < 0.3) currentZoom = 0.3;
+            if(currentZoom > 2) currentZoom = 2;
+            actualizarTransformacion();
         }
 
-        let bracket = JSON.parse(localStorage.getItem('truco_bracket'));
-
-        if (!bracket) {
-            bracket = inicializarBracket(equiposBase);
-            guardarBracket();
+        function resetearVista() {
+            initialX = 0; initialY = 0; currentZoom = 1;
+            actualizarTransformacion();
         }
 
-        function inicializarBracket(equipos) {
-            let nuevoBracket = [];
+        function actualizarTransformacion() {
+            wrapper.style.transform = `translate(calc(-50% + ${initialX}px), calc(-50% + ${initialY}px)) scale(${currentZoom})`;
+        }
+
+        // ==========================================
+        // 2. LÓGICA DEL TORNEO
+        // ==========================================
+        const equiposBase = JSON.parse(localStorage.getItem('truco_equipos'));
+        if (!equiposBase || equiposBase.length === 0) window.location.href = "truco.html";
+
+        let dataTorneo = JSON.parse(localStorage.getItem('truco_data_convergente'));
+
+        if (!dataTorneo) {
+            dataTorneo = inicializarEstructuraConvergente(equiposBase);
+            guardarData();
+        }
+
+        function inicializarEstructuraConvergente(equipos) {
             let n = equipos.length;
-            let cantidadRondas = Math.log2(n);
+            let mitad = n / 2;
+            let equiposIzq = equipos.slice(0, mitad);
+            let equiposDer = equipos.slice(mitad);
 
-            for (let r = 0; r < cantidadRondas; r++) {
-                let matchesEnRonda = n / 2;
-                let ronda = [];
+            return {
+                izq: crearRama(equiposIzq),
+                der: crearRama(equiposDer),
+                final: { t1: null, t2: null, winner: null },
+                tercer: { t1: null, t2: null, winner: null }
+            };
+        }
 
-                for (let m = 0; m < matchesEnRonda; m++) {
-                    if (r === 0) {
-                        ronda.push({
-                            t1: equipos[m * 2],
-                            t2: equipos[m * 2 + 1],
-                            winner: null
-                        });
-                    } else {
-                        ronda.push({
-                            t1: null,
-                            t2: null,
-                            winner: null
-                        });
-                    }
+        function crearRama(equiposRama) {
+            let rama = [];
+            let n = equiposRama.length;
+            let rondas = Math.log2(n); 
+
+            for (let r = 0; r < rondas; r++) {
+                let matches = n / 2;
+                let rondaActual = [];
+                for (let m = 0; m < matches; m++) {
+                    if (r === 0) rondaActual.push({ t1: equiposRama[m * 2], t2: equiposRama[m * 2 + 1], winner: null, id: `r${r}m${m}` });
+                    else rondaActual.push({ t1: null, t2: null, winner: null, id: `r${r}m${m}` });
                 }
-                nuevoBracket.push(ronda);
+                rama.push(rondaActual);
                 n = n / 2;
             }
-            return nuevoBracket;
+            return rama;
         }
 
-        function guardarBracket() {
-            localStorage.setItem('truco_bracket', JSON.stringify(bracket));
+        function guardarData() { localStorage.setItem('truco_data_convergente', JSON.stringify(dataTorneo)); }
+
+        function getNombreRonda(rondaIndex, totalRondasRama) {
+            let faltantes = totalRondasRama - rondaIndex;
+            if (faltantes === 1) return "SEMIFINAL";
+            if (faltantes === 2) return "CUARTOS DE FINAL";
+            if (faltantes === 3) return "OCTAVOS DE FINAL";
+            return `RONDA PREVIA`;
         }
 
-        function getNombreRonda(indice, totalRondas) {
-            let faltantes = totalRondas - indice;
-            if (faltantes === 1) return "FINAL";
-            if (faltantes === 2) return "SEMIFINALES";
-            if (faltantes === 3) return "CUARTOS DE FINAL";
-            if (faltantes === 4) return "OCTAVOS DE FINAL";
-            return `RONDA ${indice + 1}`;
-        }
-
-        function generarHTMLPartido(match, rIndex, mIndex) {
+        // ==========================================
+        // 3. DIBUJADO DEL ÁRBOL
+        // ==========================================
+        function generarHTMLPartido(match, lado, rIndex, mIndex, esEspecial = false, tipoEspecial = '') {
             const renderEquipo = (equipo, numEquipo) => {
-                if (!equipo) {
-                    return `<div class="equipo vacio"><span class="equipo-nombre">Por definirse</span></div>`;
-                }
-                
+                if (!equipo) return `<div class="equipo vacio"><span class="equipo-nombre">Por definirse</span></div>`;
                 let isWinner = (match.winner && match.winner.id === equipo.id) ? 'ganador' : '';
-                
-                return `
-                    <div class="equipo ${isWinner}" onclick="avanzarEquipo(${rIndex}, ${mIndex}, ${numEquipo})">
-                        <span class="equipo-nombre">${equipo.nombre}</span>
-                        <span class="equipo-jugadores">${equipo.jugadores}</span>
-                    </div>
-                `;
+                return `<div class="equipo ${isWinner}" onclick="avanzarEquipo('${lado}', ${rIndex}, ${mIndex}, ${numEquipo}, ${esEspecial}, '${tipoEspecial}')">
+                            <span class="equipo-nombre">${equipo.nombre}</span>
+                            <span class="equipo-jugadores">${equipo.jugadores}</span>
+                        </div>`;
             };
 
+            let extraClass = '';
+            let titulo = '';
+            if(esEspecial) {
+                if(tipoEspecial === 'final') { extraClass = 'final'; titulo = `<p class="titulo-partido-especial titulo-final">GRAN FINAL</p>`; } 
+                else if(tipoEspecial === 'tercer') { extraClass = 'tercer-puesto'; titulo = `<p class="titulo-partido-especial">3° Y 4° PUESTO</p>`; }
+            }
+
+            let lineasHTML = '';
+            if (!esEspecial) {
+                if (lado === 'izq') {
+                    if (rIndex < dataTorneo.izq.length - 1) lineasHTML += `<div class="linea-out-izq"></div>`; 
+                    if (rIndex > 0) lineasHTML += `<div class="linea-in-izq"></div>`; 
+                    if (mIndex % 2 === 0 && rIndex < dataTorneo.izq.length - 1) lineasHTML += `<div class="linea-vertical-izq"></div>`; 
+                } else if (lado === 'der') {
+                    if (rIndex < dataTorneo.der.length - 1) lineasHTML += `<div class="linea-out-der"></div>`; 
+                    if (rIndex > 0) lineasHTML += `<div class="linea-in-der"></div>`; 
+                    if (mIndex % 2 === 0 && rIndex < dataTorneo.der.length - 1) lineasHTML += `<div class="linea-vertical-der"></div>`; 
+                }
+            }
+
             return `
-                <div class="partido">
-                    ${renderEquipo(match.t1, 1)}
-                    ${renderEquipo(match.t2, 2)}
+                <div class="partido-contenedor">
+                    ${lineasHTML}
+                    <div class="partido ${extraClass}">
+                        ${titulo}
+                        ${renderEquipo(match.t1, 1)}
+                        ${renderEquipo(match.t2, 2)}
+                    </div>
                 </div>
             `;
         }
 
-        function dibujarBracket() {
-            const wrapper = document.getElementById('bracketWrapper');
+        function dibujarArbol() {
             wrapper.innerHTML = '';
-            
-            let campeonDefinido = null;
+            let totalRondasRama = dataTorneo.izq.length;
 
-            bracket.forEach((ronda, rIndex) => {
-                let divRonda = document.createElement('div');
-                divRonda.classList.add('ronda');
-                
-                let titulo = document.createElement('div');
-                titulo.classList.add('titulo-ronda');
-                titulo.textContent = getNombreRonda(rIndex, bracket.length);
-                divRonda.appendChild(titulo);
-
-                ronda.forEach((match, mIndex) => {
-                    divRonda.innerHTML += generarHTMLPartido(match, rIndex, mIndex);
-                    
-                    if (rIndex === bracket.length - 1 && match.winner) {
-                        campeonDefinido = match.winner;
-                    }
-                });
-
-                wrapper.appendChild(divRonda);
+            let divIzq = document.createElement('div');
+            divIzq.className = 'rama rama-izquierda';
+            dataTorneo.izq.forEach((ronda, rIndex) => {
+                let divCol = document.createElement('div'); divCol.className = 'columna-ronda';
+                let titulo = document.createElement('div'); titulo.className = 'titulo-ronda'; titulo.textContent = getNombreRonda(rIndex, totalRondasRama);
+                divCol.appendChild(titulo);
+                ronda.forEach((match, mIndex) => { divCol.innerHTML += generarHTMLPartido(match, 'izq', rIndex, mIndex); });
+                divIzq.appendChild(divCol);
             });
 
-            const campeonBox = document.getElementById('campeonBox');
-            if (campeonDefinido) {
-                campeonBox.classList.add('show');
-                document.getElementById('nombreCampeon').textContent = campeonDefinido.nombre;
-                document.getElementById('jugadoresCampeon').textContent = campeonDefinido.jugadores;
-            } else {
-                campeonBox.classList.remove('show');
-            }
-        }
-
-        function avanzarEquipo(rIndex, mIndex, numEquipo) {
-            let partidoActual = bracket[rIndex][mIndex];
-            let equipoSeleccionado = numEquipo === 1 ? partidoActual.t1 : partidoActual.t2;
-
-            if (!equipoSeleccionado) return;
-
-            partidoActual.winner = equipoSeleccionado;
-
-            let nextRIndex = rIndex + 1;
-            if (nextRIndex < bracket.length) {
-                let nextMIndex = Math.floor(mIndex / 2);
-                let partidoSiguiente = bracket[nextRIndex][nextMIndex];
-
-                if (mIndex % 2 === 0) {
-                    partidoSiguiente.t1 = equipoSeleccionado;
-                } else {
-                    partidoSiguiente.t2 = equipoSeleccionado;
-                }
-                
-                limpiarCascada(nextRIndex, nextMIndex);
-            }
-
-            guardarBracket();
-            dibujarBracket();
-        }
-
-        function limpiarCascada(rIndex, mIndex) {
-            let partido = bracket[rIndex][mIndex];
-            partido.winner = null;
+            let divCentro = document.createElement('div');
+            divCentro.className = 'zona-central';
+            divCentro.innerHTML += `<img src="escudo.png" alt="Escudo Club California" class="escudo-central">`;
             
-            let nextRIndex = rIndex + 1;
-            if (nextRIndex < bracket.length) {
-                let nextMIndex = Math.floor(mIndex / 2);
-                if (mIndex % 2 === 0) {
-                    bracket[nextRIndex][nextMIndex].t1 = null;
-                } else {
-                    bracket[nextRIndex][nextMIndex].t2 = null;
-                }
-                limpiarCascada(nextRIndex, nextMIndex);
+            let divPartidosCentrales = document.createElement('div');
+            divPartidosCentrales.style.position = 'relative';
+            divPartidosCentrales.innerHTML += `<div class="linea-final-izq"></div><div class="linea-final-der"></div>`;
+            divPartidosCentrales.innerHTML += generarHTMLPartido(dataTorneo.final, 'centro', 0, 0, true, 'final');
+            divPartidosCentrales.innerHTML += generarHTMLPartido(dataTorneo.tercer, 'centro', 0, 0, true, 'tercer');
+            divCentro.appendChild(divPartidosCentrales);
+
+            let divDer = document.createElement('div');
+            divDer.className = 'rama rama-derecha';
+            dataTorneo.der.forEach((ronda, rIndex) => {
+                let divCol = document.createElement('div'); divCol.className = 'columna-ronda';
+                let titulo = document.createElement('div'); titulo.className = 'titulo-ronda'; titulo.textContent = getNombreRonda(rIndex, totalRondasRama);
+                divCol.appendChild(titulo);
+                ronda.forEach((match, mIndex) => { divCol.innerHTML += generarHTMLPartido(match, 'der', rIndex, mIndex); });
+                divDer.appendChild(divCol);
+            });
+
+            wrapper.appendChild(divIzq);
+            wrapper.appendChild(divCentro);
+            wrapper.appendChild(divDer);
+
+            const campeonBox = document.getElementById('campeonBox');
+            if (dataTorneo.final.winner) {
+                campeonBox.classList.add('show'); 
+                document.getElementById('nombreCampeon').textContent = dataTorneo.final.winner.nombre; 
+                document.getElementById('jugadoresCampeon').textContent = dataTorneo.final.winner.jugadores;
+            } else { 
+                campeonBox.classList.remove('show'); 
             }
         }
 
-        dibujarBracket();
+        // ==========================================
+        // 4. LÓGICA DE AVANCE Y 3ER PUESTO
+        // ==========================================
+        function avanzarEquipo(lado, rIndex, mIndex, numEquipo, esEspecial, tipoEspecial) {
+            let partidoActual = esEspecial ? (tipoEspecial === 'final' ? dataTorneo.final : dataTorneo.tercer) : dataTorneo[lado][rIndex][mIndex];
+            let equipoGanador = numEquipo === 1 ? partidoActual.t1 : partidoActual.t2;
+            let equipoPerdedor = numEquipo === 1 ? partidoActual.t2 : partidoActual.t1;
+
+            if (!equipoGanador) return;
+            partidoActual.winner = equipoGanador;
+
+            if (!esEspecial) {
+                let rama = dataTorneo[lado];
+                let nextRIndex = rIndex + 1;
+                
+                if (nextRIndex < rama.length) {
+                    let nextMIndex = Math.floor(mIndex / 2);
+                    let partidoSiguiente = rama[nextRIndex][nextMIndex];
+                    if (mIndex % 2 === 0) partidoSiguiente.t1 = equipoGanador; else partidoSiguiente.t2 = equipoGanador;
+                    limpiarCascada(lado, nextRIndex, nextMIndex);
+                } else {
+                    if (lado === 'izq') dataTorneo.final.t1 = equipoGanador;
+                    if (lado === 'der') dataTorneo.final.t2 = equipoGanador;
+                    dataTorneo.final.winner = null; 
+                    
+                    if(equipoPerdedor) {
+                        if (lado === 'izq') dataTorneo.tercer.t1 = equipoPerdedor;
+                        if (lado === 'der') dataTorneo.tercer.t2 = equipoPerdedor;
+                        dataTorneo.tercer.winner = null;
+                    }
+                }
+            }
+
+            guardarData(); 
+            dibujarArbol();
+        }
+
+        function limpiarCascada(lado, rIndex, mIndex) {
+            let partido = dataTorneo[lado][rIndex][mIndex]; 
+            partido.winner = null; 
+            let nextRIndex = rIndex + 1;
+            
+            if (nextRIndex < dataTorneo[lado].length) {
+                let nextMIndex = Math.floor(mIndex / 2);
+                if (mIndex % 2 === 0) dataTorneo[lado][nextRIndex][nextMIndex].t1 = null; 
+                else dataTorneo[lado][nextRIndex][nextMIndex].t2 = null;
+                limpiarCascada(lado, nextRIndex, nextMIndex);
+            } else {
+                if (lado === 'izq') { dataTorneo.final.t1 = null; dataTorneo.tercer.t1 = null; }
+                if (lado === 'der') { dataTorneo.final.t2 = null; dataTorneo.tercer.t2 = null; }
+                dataTorneo.final.winner = null;
+                dataTorneo.tercer.winner = null;
+            }
+        }
+
+        function finalizarTorneo() {
+            if(confirm("¿Estás seguro de finalizar? Esto borrará la llave actual y te llevará al menú de truco.")) {
+                localStorage.removeItem('truco_equipos'); 
+                localStorage.removeItem('truco_bracket'); 
+                localStorage.removeItem('truco_data_convergente'); 
+                window.location.href = "truco.html";
+            }
+        }
+
+        dibujarArbol();
+        if(equiposBase.length >= 16) ajustarZoom(-0.3);
 
     </script>
 </body>
