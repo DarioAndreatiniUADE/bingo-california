@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!placeholder) return; // Si no lo tiene, no hacemos nada
 
     // 2. Traemos los sponsors de la memoria compartida
-    const sponsorsGuardados = JSON.parse(localStorage.getItem('bingo_sponsors')) || ["Dario", "Roberto", "Lucas"];
+    const sponsorsGuardados = JSON.parse(localStorage.getItem('bingo_sponsors')) || ["Sponsor"];
     
     let itemsSeguros = [...sponsorsGuardados];
     while(itemsSeguros.length < 15) {

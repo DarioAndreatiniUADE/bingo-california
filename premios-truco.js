@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const trackPremiosTruco = document.getElementById('trackPremiosTruco');
     
     if (trackPremiosTruco) {
-        const premiosTruco = JSON.parse(localStorage.getItem('truco_premios')) || ["1° Premio: Asado", "2° Premio: Vino"];
+        const premiosTruco = JSON.parse(localStorage.getItem('truco_premios')) || ["Premio"];
         
         // Clonamos para que no queden huecos blancos
         let itemsSeguros = [...premiosTruco];

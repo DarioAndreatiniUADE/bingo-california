@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Torneo de Truco - Club California</title>
     
-    <link rel="icon" href="escudo.png" type="image/png">
+    <link rel="icon" href="fondo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
@@ -38,9 +38,9 @@
         <div class="marca-agua"></div>
 
         <header>
-            <img src="escudo.png" alt="Escudo Club California">
+            <img src="fondo.png" alt="Escudo Club California">
             <h1>TORNEO DE TRUCO</h1>
-            <img src="escudo.png" alt="Escudo Club California">
+            <img src="fondo.png" alt="Escudo Club California">
         </header>
 
         <div id="sponsors-placeholder"></div>
@@ -66,17 +66,40 @@
     <script src="premios-truco.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('truco_equipos')) document.getElementById('btnContinuar').style.display = 'flex';
+            if (localStorage.getItem('truco_equipos')) {
+                document.getElementById('btnContinuar').style.display = 'flex';
+            }
         });
-        function continuarTorneo() { window.location.href = "llave-truco.html"; }
+
+        function continuarTorneo() { 
+            const formato = localStorage.getItem('truco_formato');
+            if (formato === 'superliga') {
+                window.location.href = "superliga.html"; 
+            } else {
+                window.location.href = "llave-truco.html"; 
+            }
+        }
+
         function nuevoTorneo() {
             if (localStorage.getItem('truco_equipos')) {
-                if(confirm("⚠️ Tienes un torneo en curso. Si inicias uno nuevo, los datos se borrarán. ¿Estás seguro?")) borrarYEmpezar();
-            } else { borrarYEmpezar(); }
+                if(confirm("⚠️ Tienes un torneo en curso. Si inicias uno nuevo, los datos se borrarán. ¿Estás seguro?")) {
+                    borrarYEmpezar();
+                }
+            } else { 
+                borrarYEmpezar(); 
+            }
         }
+
         function borrarYEmpezar() {
-            localStorage.removeItem('truco_equipos'); localStorage.removeItem('truco_bracket');
-            window.location.href = "config-truco.html"; 
+            // Limpiamos ABSOLUTAMENTE TODO para que no queden datos fantasma
+            localStorage.removeItem('truco_equipos'); 
+            localStorage.removeItem('truco_bracket');
+            localStorage.removeItem('truco_data_convergente');
+            localStorage.removeItem('superliga_data');
+            localStorage.removeItem('truco_formato');
+            
+            // Reemplazo forzado para evitar la caché del navegador
+            window.location.replace("config-truco.html"); 
         }
     </script>
 </body>

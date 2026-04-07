@@ -1,7 +1,7 @@
 // =========================================================
 // 1. DIBUJAR PREMIOS DEL BINGO (Lee de la memoria)
 // =========================================================
-const premiosBingo = JSON.parse(localStorage.getItem('bingo_premios')) || ["1° Premio Sorpresa", "2° Premio Sorpresa"];
+const premiosBingo = JSON.parse(localStorage.getItem('bingo_premios')) || ["1° Premio", "2° Premio"];
 
 const trackPremios = document.getElementById('trackPremios');
 if (trackPremios) {

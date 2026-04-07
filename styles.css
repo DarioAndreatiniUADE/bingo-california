@@ -249,10 +249,11 @@ header h1 {
 .btn-guardar:hover { background: var(--rojo-oscuro); transform: translateY(-2px); }
 
 /* --- CINTAS CORREDIZAS --- */
+/* --- CINTAS CORREDIZAS --- */
 .seccion-sponsors {
     background: rgba(255, 255, 255, 0.85); 
-    border-bottom: 3px solid var(--dorado-club);
-    padding: 10px 0 15px 0;
+    border-bottom: 2px solid var(--dorado-club);
+    padding: 3px 0 5px 0; /* Mucho más fino */
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     position: relative;
     z-index: 5;
@@ -263,18 +264,18 @@ header h1 {
 
 .titulo-sponsors {
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 0.7rem; /* Letra más chica */
     font-weight: 800;
     color: var(--rojo-oscuro);
     text-transform: uppercase;
-    margin: 0 0 10px 0;
+    margin: 0 0 2px 0;
     letter-spacing: 2px;
 }
 
 .cinta-premios {
     background: linear-gradient(to right, var(--rojo-oscuro), var(--rojo-club), var(--rojo-oscuro));
-    border-top: 3px solid var(--dorado-club); 
-    padding: 20px 0; 
+    border-top: 2px solid var(--dorado-club); 
+    padding: 8px 0; /* Más fino */
     box-shadow: inset 0 5px 10px rgba(0,0,0,0.2);
     position: relative; 
     z-index: 10; 
@@ -302,6 +303,37 @@ header h1 {
 @keyframes scroll-infinito {
     0% { transform: translateX(0); }
     100% { transform: translateX(calc(-100% / var(--bloques))); } 
+}
+
+/* --- ESTILOS DE LOS ITEMS --- */
+.sponsor-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; /* Achicamos los nombres */
+    color: var(--fondo-oscuro);
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    white-space: nowrap;
+}
+
+.premio-item {
+    background: rgba(0,0,0,0.2);
+    color: white;
+    padding: 5px 20px; /* Botones más compactos */
+    border-radius: 50px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; 
+    letter-spacing: 1px;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.premio-item:hover {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--dorado-brillante);
+    transform: translateY(-2px);
 }
 
 /* --- ESTILOS DE LOS ITEMS --- */

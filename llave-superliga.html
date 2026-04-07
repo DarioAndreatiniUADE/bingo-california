@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playoffs SuperLiga - Club California</title>
+    
+    <link rel="icon" href="fondo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body { overflow: hidden; margin: 0; padding: 0; background-color: var(--fondo-oscuro); display: flex; flex-direction: column; height: 100vh; position: relative;}
+        
+        header { padding: 5px 20px !important; z-index: 60; display: flex; align-items: center; justify-content: center; position: relative; background: #000; flex-shrink: 0;}
+        header h1 { font-family: 'Bebas Neue', sans-serif !important; font-size: 2.2rem !important; margin: 0 20px !important; color: white; letter-spacing: 2px;}
+        header img { height: 35px !important; }
+
+        .btn-volver-cabecera {
+            position: absolute; left: 30px; top: 50%; transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7); border: 2px solid var(--dorado-club); border-radius: 8px;
+            color: white; font-family: 'Montserrat', sans-serif; font-weight: bold; font-size: 0.9rem; padding: 6px 15px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 10px; z-index: 1000; transition: 0.3s;
+        }
+        .btn-volver-cabecera:hover { background: var(--dorado-club); color: var(--fondo-oscuro); }
+
+        #sponsors-placeholder, .cinta-premios { flex-shrink: 0; z-index: 50; width: 100%; }
+        .seccion-sponsors { padding: 3px 0 !important; border-bottom: 2px solid var(--dorado-club) !important; flex-shrink: 0; z-index: 50; background: rgba(255,255,255,0.95); }
+        .titulo-sponsors { font-size: 0.65rem !important; margin: 0 !important; font-weight: 800; color: var(--rojo-oscuro); letter-spacing: 2px; text-align: center;}
+        .sponsor-item { font-size: 1.1rem !important; font-family: 'Bebas Neue', sans-serif !important; color: #111; }
+        .cinta-premios { padding: 5px 0 !important; border-top: 2px solid var(--dorado-club) !important; flex-shrink: 0; z-index: 50; }
+        .premio-item { padding: 2px 15px !important; font-size: 1.1rem !important; border-width: 1px !important; font-family: 'Bebas Neue', sans-serif; }
+
+        /* CONTENEDOR DE LA LLAVE */
+        .llave-container { flex: 1; position: relative; width: 100%; overflow: hidden; background: rgba(255, 255, 255, 0.95); background-image: radial-gradient(rgba(212, 175, 55, 0.2) 1px, transparent 0); background-size: 40px 40px; z-index: 10;}
+        
+        /* BOTONES DE COPA ADENTRO DEL CONTENEDOR */
+        .controles-copa { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 1000; }
+        .btn-copa { padding: 10px 25px; font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; border-radius: 50px; border: 2px solid transparent; cursor: pointer; transition: 0.3s; letter-spacing: 1px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn-copa-oro { background: linear-gradient(135deg, #FFF3B0, #D4AF37); color: #000; border-color: #fff;}
+        .btn-copa-plata { background: linear-gradient(135deg, #f0f0f0, #b0b0b0); color: #000; border-color: #fff;}
+        .btn-copa.inactivo { opacity: 0.4; filter: grayscale(1); transform: scale(0.9); box-shadow: none; border-color: transparent;}
+        .btn-copa.inactivo:hover { opacity: 0.8; transform: scale(0.95); }
+
+        .controles-vista { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; background: rgba(0, 0, 0, 0.8); padding: 8px; border-radius: 10px; border: 2px solid var(--dorado-club); }
+        .btn-control { background: var(--rojo-club); color: white; border: none; border-radius: 5px; width: 35px; height: 35px; font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
+        .btn-control:hover { background: var(--rojo-oscuro); transform: scale(1.1); }
+        .btn-control.reset { width: auto; padding: 0 15px; font-size: 0.9rem; font-family: 'Montserrat', sans-serif; }
+
+        #arbol-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1); transform-origin: center center; transition: transform 0.1s ease-out; cursor: grab; display: flex; align-items: center; justify-content: center; gap: 40px; padding: 50px; min-width: max-content; margin-top: 20px;}
+        #arbol-wrapper:active { cursor: grabbing; }
+
+        .rama { display: flex; gap: 40px; align-items: center; }
+        .rama-izquierda { flex-direction: row; }
+        .rama-derecha { flex-direction: row-reverse; } 
+        .columna-ronda { display: flex; flex-direction: column; justify-content: space-around; gap: 20px; height: 100%; }
+        .titulo-ronda { text-align: center; font-family: 'Bebas Neue', sans-serif; color: var(--rojo-club); font-size: 1.4rem; letter-spacing: 1px; margin-bottom: 10px; text-transform: uppercase;}
+
+        .zona-central { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; min-width: 300px; position: relative; z-index: 10; }
+        .escudo-central { height: 120px; filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.4)); animation: flotar-suave 4s ease-in-out infinite; }
+        @keyframes flotar-suave { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
+
+        /* DISEÑO DE TARJETAS UNIFICADO */
+        .partido-contenedor { position: relative; display: flex; align-items: center; }
+        .partido { background: white; border: 2px solid #ddd; border-radius: 12px; min-width: 240px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden; display: flex; flex-direction: column; z-index: 2; position: relative; transition: 0.3s; }
+        .partido:hover { border-color: var(--dorado-club); box-shadow: 0 8px 20px rgba(0,0,0,0.15); transform: translateY(-2px); }
+        .partido.final { border: 3px solid var(--dorado-club); transform: scale(1.05); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4); }
+        .partido.final:hover { transform: scale(1.08); }
+        .partido.tercer-puesto { border: 2px dashed #aaa; background: #fdfdfd; margin-top: 15px; }
+
+        .titulo-partido-especial { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: #555; text-align: center; background: #f4f4f4; padding: 4px 0; margin: 0; border-bottom: 1px solid #ddd; letter-spacing: 1px;}
+        .titulo-final { color: var(--fondo-oscuro); background: linear-gradient(to right, var(--dorado-brillante), var(--dorado-club)); border-bottom: none;}
+
+        .equipo { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #eee; position: relative; user-select: none; }
+        .equipo:last-child { border-bottom: none; } 
+        .equipo:hover { background: #f9f9f9; } 
+        .equipo.vacio { color: #aaa; font-style: italic; cursor: not-allowed; background: #fafafa; justify-content: center;}
+        .equipo.ganador { background: linear-gradient(135deg, var(--dorado-brillante), var(--dorado-club)); color: var(--fondo-oscuro); border-bottom-color: rgba(0,0,0,0.1);}
+        
+        .equipo-nombre { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.05rem; margin: 0; flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #222;}
+        .equipo.ganador .equipo-nombre { color: var(--fondo-oscuro); font-weight: 800; }
+        .equipo.vacio .equipo-nombre { font-weight: 500; text-align: center;}
+        
+        /* Etiqueta de grupo superliga (ej: 1°A) */
+        .etiqueta-grupo { font-family: 'Montserrat', sans-serif; font-size: 0.75rem; color: #666; font-weight: 800; background: #eaeaea; padding: 3px 6px; border-radius: 4px; margin-left: 10px; flex-shrink: 0; border: 1px solid #ccc; letter-spacing: 0.5px;}
+        .equipo.ganador .etiqueta-grupo { background: rgba(0,0,0,0.15); color: var(--rojo-oscuro); border-color: rgba(0,0,0,0.2);}
+
+        .linea-out-izq, .linea-in-izq, .linea-out-der, .linea-in-der { position: absolute; top: 50%; width: 20px; height: 2px; background: var(--rojo-club); z-index: 0; }
+        .linea-out-izq { right: -20px; } .linea-in-izq { left: -20px; } .linea-out-der { left: -20px; } .linea-in-der { right: -20px; }
+        .linea-vertical-izq { position: absolute; right: -20px; top: 50%; width: 2px; height: calc(100% + 20px); background: var(--rojo-club); z-index: 0; }
+        .linea-vertical-der { position: absolute; left: -20px; top: 50%; width: 2px; height: calc(100% + 20px); background: var(--rojo-club); z-index: 0; }
+        .linea-final-izq { position: absolute; right: 100%; top: 50%; width: 40px; height: 3px; background: var(--dorado-club); z-index: 0; }
+        .linea-final-der { position: absolute; left: 100%; top: 50%; width: 40px; height: 3px; background: var(--dorado-club); z-index: 0; }
+
+        .campeon-box { position: absolute; top: -140px; left: 50%; transform: translateX(-50%); text-align: center; padding: 15px 30px; background: linear-gradient(135deg, var(--rojo-club), var(--rojo-oscuro)); color: white; border-radius: 15px; border: 3px solid var(--dorado-brillante); box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); display: none; z-index: 2000; width: max-content; }
+        .campeon-box.show { display: block; animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popUp { 0% { transform: translate(-50%, 50px) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } }
+
+        /* BOTÓN DE FINALIZAR GLOBAL */
+        .btn-terminar-global {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--dorado-brillante), var(--dorado-club)); color: var(--fondo-oscuro);
+            padding: 15px 40px; font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 900;
+            border-radius: 50px; border: 3px solid #fff; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 2000; display: none; transition: 0.3s; text-transform: uppercase;
+        }
+        .btn-terminar-global:hover { transform: translateX(-50%) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.7); }
+    </style>
+</head>
+<body>
+    <div class="fondo-base"></div>
+    <div class="marca-agua"></div>
+
+    <header>
+        <a href="superliga.html" class="btn-volver-cabecera">⬅ Volver a Grupos</a>
+        <img src="fondo.png" alt="L">
+        <h1>PLAYOFFS SUPERLIGA</h1>
+        <img src="fondo.png" alt="R">
+    </header>
+
+    <div id="sponsors-placeholder"></div>
+
+    <main class="llave-container" id="llaveContainer">
+        
+        <div class="controles-copa">
+            <button class="btn-copa btn-copa-oro" id="btnOro" onclick="cambiarCopa('oro')">🏆 COPA DE ORO</button>
+            <button class="btn-copa btn-copa-plata inactivo" id="btnPlata" onclick="cambiarCopa('plata')">🥈 COPA DE PLATA</button>
+        </div>
+
+        <div class="controles-vista">
+            <button class="btn-control" onclick="ajustarZoom(0.1)">+</button>
+            <button class="btn-control reset" onclick="resetearVista()">CENTRAR</button>
+            <button class="btn-control" onclick="ajustarZoom(-0.1)">-</button>
+        </div>
+
+        <button class="btn-terminar-global" id="btnTerminarTorneo" onclick="finalizarTorneo()">🏆 FINALIZAR TORNEO COMPLETO</button>
+
+        <div id="arbol-wrapper">
+            </div>
+    </main>
+
+    <div class="cinta-premios"><div class="marquee-track" id="trackPremiosTruco"></div></div>
+
+    <script src="sponsors.js"></script>
+    <script src="premios-truco.js"></script>
+
+    <script>
+        // 1. PAN & ZOOM
+        const container = document.getElementById('llaveContainer');
+        const wrapper = document.getElementById('arbol-wrapper');
+        let isDragging = false, startX, startY, initialX = 0, initialY = 0, currentZoom = 1;
+
+        container.addEventListener('mousedown', (e) => { if(e.target.closest('.equipo') || e.target.closest('button')) return; isDragging = true; startX = e.clientX - initialX; startY = e.clientY - initialY; });
+        window.addEventListener('mousemove', (e) => { if (!isDragging) return; e.preventDefault(); initialX = e.clientX - startX; initialY = e.clientY - startY; actualizarTransformacion(); });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+        container.addEventListener('wheel', (e) => { e.preventDefault(); ajustarZoom(e.deltaY > 0 ? -0.05 : 0.05); });
+        function ajustarZoom(d) { currentZoom += d; if(currentZoom<0.3) currentZoom=0.3; if(currentZoom>2) currentZoom=2; actualizarTransformacion(); }
+        function resetearVista() { initialX=0; initialY=0; currentZoom=1; actualizarTransformacion(); }
+        function actualizarTransformacion() { wrapper.style.transform = `translate(calc(-50% + ${initialX}px), calc(-50% + ${initialY}px)) scale(${currentZoom})`; }
+
+        // 2. CARGA DE DATOS CRUZADOS
+        const clasificados = JSON.parse(localStorage.getItem('superliga_clasificados'));
+        if (!clasificados) window.location.href = "superliga.html";
+
+        let bracketData = JSON.parse(localStorage.getItem('superliga_brackets'));
+        let copaActiva = 'oro';
+
+        // PARCHE MÁGICO para estructuras viejas que no tenían tercer puesto
+        if (bracketData) {
+            if (!bracketData.oro.tercer) bracketData.oro.tercer = {t1:null, t2:null, winner:null};
+            if (!bracketData.plata.tercer) bracketData.plata.tercer = {t1:null, t2:null, winner:null};
+        }
+
+        if (!bracketData) {
+            bracketData = { oro: crearArbolCruzado(clasificados.oro, true), plata: crearArbolCruzado(clasificados.plata, false) };
+            localStorage.setItem('superliga_brackets', JSON.stringify(bracketData));
+        }
+
+        function crearArbolCruzado(equiposArray, esOro) {
+            let n = equiposArray.length; 
+            let izq=[], der=[];
+
+            if (n === 8) { // 4 Grupos
+                const gA1 = equiposArray.find(e => e.grupo==='A' && e.pos===(esOro?1:3));
+                const gA2 = equiposArray.find(e => e.grupo==='A' && e.pos===(esOro?2:4));
+                const gB1 = equiposArray.find(e => e.grupo==='B' && e.pos===(esOro?1:3));
+                const gB2 = equiposArray.find(e => e.grupo==='B' && e.pos===(esOro?2:4));
+                const gC1 = equiposArray.find(e => e.grupo==='C' && e.pos===(esOro?1:3));
+                const gC2 = equiposArray.find(e => e.grupo==='C' && e.pos===(esOro?2:4));
+                const gD1 = equiposArray.find(e => e.grupo==='D' && e.pos===(esOro?1:3));
+                const gD2 = equiposArray.find(e => e.grupo==='D' && e.pos===(esOro?2:4));
+
+                izq = [ {t1:gA1, t2:gB2, winner:null}, {t1:gC1, t2:gD2, winner:null} ];
+                der = [ {t1:gB1, t2:gA2, winner:null}, {t1:gD1, t2:gC2, winner:null} ];
+            } else if (n === 4) { // 2 Grupos
+                const gA1 = equiposArray.find(e => e.grupo==='A' && e.pos===(esOro?1:3));
+                const gA2 = equiposArray.find(e => e.grupo==='A' && e.pos===(esOro?2:4));
+                const gB1 = equiposArray.find(e => e.grupo==='B' && e.pos===(esOro?1:3));
+                const gB2 = equiposArray.find(e => e.grupo==='B' && e.pos===(esOro?2:4));
+                
+                izq = [ {t1:gA1, t2:gB2, winner:null} ];
+                der = [ {t1:gB1, t2:gA2, winner:null} ];
+            } else {
+                let m = n/2; 
+                for(let i=0; i<m/2; i++){
+                    izq.push({t1:equiposArray[i*4], t2:equiposArray[i*4+3], winner:null});
+                    der.push({t1:equiposArray[i*4+1], t2:equiposArray[i*4+2], winner:null});
+                }
+            }
+            return { izq: expandirRama(izq), der: expandirRama(der), final: {t1:null, t2:null, winner:null}, tercer: {t1:null, t2:null, winner:null} };
+        }
+
+        function expandirRama(ronda0) {
+            let rama = [ronda0]; let rondasFaltantes = Math.log2(ronda0.length); let nMatches = ronda0.length / 2;
+            for(let r=0; r<rondasFaltantes; r++) {
+                let rondaN = [];
+                for(let m=0; m<nMatches; m++) rondaN.push({t1:null, t2:null, winner:null});
+                rama.push(rondaN); nMatches = nMatches/2;
+            }
+            return rama;
+        }
+
+        function cambiarCopa(tipo) {
+            copaActiva = tipo;
+            document.getElementById('btnOro').className = `btn-copa btn-copa-oro ${tipo==='plata'?'inactivo':''}`;
+            document.getElementById('btnPlata').className = `btn-copa btn-copa-plata ${tipo==='oro'?'inactivo':''}`;
+            dibujarArbol();
+        }
+
+        function getNombreRonda(rIndex, total) {
+            let f = total - rIndex;
+            if(f===1) return "SEMIFINAL"; if(f===2) return "CUARTOS"; if(f===3) return "OCTAVOS"; return "RONDA";
+        }
+
+        function generarHTMLPartido(match, lado, rIndex, mIndex, esEspecial=false, tipoEspecial='') {
+            const renderEq = (eq, nEq) => {
+                if(!eq) return `<div class="equipo vacio"><span class="equipo-nombre">Por definirse</span></div>`;
+                let winClass = (match.winner && match.winner.equipo.nombre === eq.equipo.nombre) ? 'ganador' : '';
+                return `<div class="equipo ${winClass}" onclick="avanzar('${lado}', ${rIndex}, ${mIndex}, ${nEq}, ${esEspecial}, '${tipoEspecial}')">
+                            <span class="equipo-nombre">${eq.equipo.nombre}</span>
+                            <span class="etiqueta-grupo">${eq.pos}°${eq.grupo}</span>
+                        </div>`;
+            };
+
+            let extClass = ''; let title = '';
+            if(esEspecial) {
+                if(tipoEspecial === 'final') { extClass = 'final'; title = `<p class="titulo-partido-especial titulo-final">GRAN FINAL ${copaActiva.toUpperCase()}</p>`; } 
+                else if(tipoEspecial === 'tercer') { extClass = 'tercer-puesto'; title = `<p class="titulo-partido-especial">3° Y 4° PUESTO</p>`; }
+            }
+
+            let lines = '';
+            if(!esEspecial) {
+                let currentTotal = bracketData[copaActiva][lado].length;
+                if(lado==='izq') {
+                    if(rIndex < currentTotal-1) lines += `<div class="linea-out-izq"></div>`;
+                    if(rIndex > 0) lines += `<div class="linea-in-izq"></div>`;
+                    if(mIndex%2===0 && rIndex < currentTotal-1) lines += `<div class="linea-vertical-izq"></div>`;
+                } else {
+                    if(rIndex < currentTotal-1) lines += `<div class="linea-out-der"></div>`;
+                    if(rIndex > 0) lines += `<div class="linea-in-der"></div>`;
+                    if(mIndex%2===0 && rIndex < currentTotal-1) lines += `<div class="linea-vertical-der"></div>`;
+                }
+            }
+
+            return `<div class="partido-contenedor">${lines}<div class="partido ${extClass}">${title}${renderEq(match.t1,1)}${renderEq(match.t2,2)}</div></div>`;
+        }
+
+        function dibujarArbol() {
+            wrapper.innerHTML = '';
+            let data = bracketData[copaActiva];
+            let total = data.izq.length;
+
+            let dIzq = document.createElement('div'); dIzq.className = 'rama rama-izquierda';
+            data.izq.forEach((r, rI) => {
+                let c = document.createElement('div'); c.className = 'columna-ronda';
+                c.innerHTML += `<div class="titulo-ronda">${getNombreRonda(rI, total)}</div>`;
+                r.forEach((m, mI) => c.innerHTML += generarHTMLPartido(m, 'izq', rI, mI));
+                dIzq.appendChild(c);
+            });
+
+            let dCen = document.createElement('div'); dCen.className = 'zona-central';
+            let htmlCen = `
+                <img src="fondo.png" alt="Escudo" class="escudo-central">
+                <div style="position:relative; width:100%; display:flex; flex-direction:column; align-items:center; gap: 15px;">
+                    <div class="linea-final-izq"></div><div class="linea-final-der"></div>
+                    ${generarHTMLPartido(data.final, 'centro', 0, 0, true, 'final')}
+                    ${generarHTMLPartido(data.tercer, 'centro', 0, 0, true, 'tercer')}
+                    <div class="campeon-box" id="campeonBoxLocal">
+                        <h2 style="font-family: 'Bebas Neue'; font-size: 2.2rem; margin: 0; color: var(--dorado-brillante);">¡CAMPEÓN DE ${copaActiva.toUpperCase()}!</h2>
+                        <h3 id="nombreCampeonLocal" style="font-size: 1.6rem; margin: 5px 0;"></h3>
+                    </div>
+                </div>`;
+            dCen.innerHTML = htmlCen;
+
+            let dDer = document.createElement('div'); dDer.className = 'rama rama-derecha';
+            data.der.forEach((r, rI) => {
+                let c = document.createElement('div'); c.className = 'columna-ronda';
+                c.innerHTML += `<div class="titulo-ronda">${getNombreRonda(rI, total)}</div>`;
+                r.forEach((m, mI) => c.innerHTML += generarHTMLPartido(m, 'der', rI, mI));
+                dDer.appendChild(c);
+            });
+
+            wrapper.appendChild(dIzq); wrapper.appendChild(dCen); wrapper.appendChild(dDer);
+
+            let cBox = document.getElementById('campeonBoxLocal');
+            if(data.final.winner) {
+                cBox.classList.add('show'); document.getElementById('nombreCampeonLocal').innerText = data.final.winner.equipo.nombre;
+            } else cBox.classList.remove('show');
+
+            verificarFinTorneo();
+        }
+
+        function avanzar(lado, rI, mI, nEq, esEspecial, tipoEspecial) {
+            let data = bracketData[copaActiva];
+            let partidoActual = esEspecial ? (tipoEspecial === 'final' ? data.final : data.tercer) : data[lado][rI][mI];
+            let winner = nEq === 1 ? partidoActual.t1 : partidoActual.t2;
+            let loser = nEq === 1 ? partidoActual.t2 : partidoActual.t1;
+            
+            if(!winner) return;
+
+            partidoActual.winner = winner;
+
+            if(!esEspecial) {
+                let nR = rI + 1;
+                if(nR < data[lado].length) {
+                    let nM = Math.floor(mI/2);
+                    if(mI%2===0) data[lado][nR][nM].t1 = winner; else data[lado][nR][nM].t2 = winner;
+                    limpiar(lado, nR, nM);
+                } else {
+                    if(lado==='izq') { data.final.t1 = winner; if(loser) data.tercer.t1 = loser; }
+                    if(lado==='der') { data.final.t2 = winner; if(loser) data.tercer.t2 = loser; }
+                    data.final.winner = null; data.tercer.winner = null;
+                }
+            }
+            localStorage.setItem('superliga_brackets', JSON.stringify(bracketData)); 
+            dibujarArbol();
+        }
+
+        function limpiar(lado, rI, mI) {
+            let data = bracketData[copaActiva];
+            data[lado][rI][mI].winner = null; let nR = rI+1;
+            if(nR < data[lado].length) {
+                let nM = Math.floor(mI/2);
+                if(mI%2===0) data[lado][nR][nM].t1 = null; else data[lado][nR][nM].t2 = null;
+                limpiar(lado, nR, nM);
+            } else {
+                if(lado==='izq') { data.final.t1 = null; data.tercer.t1 = null; }
+                if(lado==='der') { data.final.t2 = null; data.tercer.t2 = null; }
+                data.final.winner = null; data.tercer.winner = null;
+            }
+        }
+
+        // 3. LOGICA PARA MOSTRAR BOTON DE FINALIZAR
+        function verificarFinTorneo() {
+            const oroTerminada = bracketData['oro'].final.winner !== null;
+            const plataTerminada = bracketData['plata'].final.winner !== null;
+            const btnFinalizar = document.getElementById('btnTerminarTorneo');
+            
+            if (oroTerminada && plataTerminada) {
+                btnFinalizar.style.display = 'block';
+            } else {
+                btnFinalizar.style.display = 'none';
+            }
+        }
+
+        function finalizarTorneo() {
+            if(confirm("¡Felicidades a los campeones! ¿Borrar todo y volver al menú principal?")) { 
+                localStorage.clear(); 
+                window.location.href = "index.html"; 
+            }
+        }
+
+        dibujarArbol();
+    </script>
+</body>
+</html>

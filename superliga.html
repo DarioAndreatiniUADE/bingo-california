@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperLiga California</title>
+    
+    <link rel="icon" href="fondo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* --- ESTRUCTURA INQUEBRANTABLE --- */
+        body { overflow: hidden; display: flex; flex-direction: column; height: 100vh; background: var(--fondo-oscuro); font-family: 'Montserrat', sans-serif; margin: 0; position: relative;}
+        
+        /* CABECERA */
+        header { padding: 5px 20px !important; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; z-index: 60;}
+        header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem !important; margin: 0 20px !important; color: white; letter-spacing: 2px;}
+        header img { height: 35px !important; }
+
+        .btn-volver-cabecera {
+            position: absolute; left: 30px; top: 50%; transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7); border: 2px solid var(--dorado-club); border-radius: 8px;
+            color: white; font-family: 'Montserrat', sans-serif; font-weight: bold; font-size: 0.9rem; padding: 6px 15px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 10px; z-index: 1000; transition: 0.3s;
+        }
+        .btn-volver-cabecera:hover { background: var(--dorado-club); color: var(--fondo-oscuro); }
+
+        /* CINTAS FIJAS */
+        .seccion-sponsors { padding: 3px 0 !important; border-bottom: 2px solid var(--dorado-club); background: rgba(255, 255, 255, 0.95); flex-shrink: 0; z-index: 50; }
+        .titulo-sponsors { font-size: 0.65rem !important; margin: 0 !important; text-align: center; font-weight: 800; color: var(--rojo-oscuro); letter-spacing: 2px; }
+        .sponsor-item { font-size: 1.1rem !important; font-family: 'Bebas Neue', sans-serif; color: #111; }
+        
+        .cinta-premios { padding: 5px 0 !important; border-top: 2px solid var(--dorado-club); background: linear-gradient(to right, var(--rojo-oscuro), var(--rojo-club), var(--rojo-oscuro)); flex-shrink: 0; z-index: 50;}
+        .premio-item { padding: 2px 15px !important; font-size: 1.1rem !important; border: 1px solid rgba(212,175,55,0.5); border-radius: 50px; color: white; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;}
+
+        /* CONTENEDOR PRINCIPAL SIN SCROLL GLOBAL */
+        .superliga-main { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 10; overflow: hidden; }
+        
+        .selector-grupos { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; width: 100%; max-width: 1200px; flex-shrink: 0; }
+        .btn-grupo { padding: 8px 20px; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; cursor: pointer; border-radius: 8px; border: 2px solid #ccc; background: rgba(255,255,255,0.9); transition: 0.2s; letter-spacing: 1px; color: #555; box-shadow: 0 2px 5px rgba(0,0,0,0.1); backdrop-filter: blur(5px);}
+        .btn-grupo.active { background: var(--rojo-club); color: #fff; border-color: var(--rojo-oscuro); transform: scale(1.05); box-shadow: 0 4px 10px rgba(139,26,26,0.3); }
+
+        /* GRILLA CON SCROLL INTERNO */
+        .grid-superliga { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; max-width: 1200px; width: 100%; flex: 1; overflow: hidden; }
+        
+        .card { background: rgba(255, 255, 255, 0.95); border: 2px solid var(--dorado-club); border-radius: 15px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; backdrop-filter: blur(10px); }
+        .card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--rojo-club); border-bottom: 3px solid var(--dorado-club); margin: 0 0 15px 0; padding-bottom: 8px; letter-spacing: 1px; flex-shrink: 0;}
+
+        /* ÁREAS SCROLLEABLES ADENTRO DE LAS CARDS */
+        .tabla-container { flex: 1; overflow-y: auto; padding-right: 5px; }
+        .fixture-container { flex: 1; overflow-y: auto; padding-right: 10px; }
+        
+        /* Scrollbar custom interno */
+        .tabla-container::-webkit-scrollbar, .fixture-container::-webkit-scrollbar { width: 6px; }
+        .tabla-container::-webkit-scrollbar-track, .fixture-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .tabla-container::-webkit-scrollbar-thumb, .fixture-container::-webkit-scrollbar-thumb { background: var(--dorado-club); border-radius: 4px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8f9fa; padding: 10px; font-size: 0.9rem; border-bottom: 2px solid #ddd; font-family: 'Montserrat', sans-serif; color: #333; position: sticky; top: 0; z-index: 2;}
+        td { padding: 12px 10px; text-align: center; border-bottom: 1px solid #eee; font-weight: 700; font-size: 1rem; color: #444;}
+        .pos-oro { background: rgba(212, 175, 55, 0.15); border-left: 4px solid var(--dorado-club); }
+        .pos-plata { background: rgba(192, 192, 192, 0.15); border-left: 4px solid silver; }
+
+        .partido-fila { display: flex; align-items: center; justify-content: space-between; padding: 10px 5px; border-bottom: 1px solid #eee; gap: 10px; }
+        .nombre-equipo { flex: 1; font-weight: 700; font-size: 1rem; color: #333; }
+        
+        .btn-gano { padding: 6px 12px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; cursor: pointer; border-radius: 6px; border: 2px solid #ccc; background: #f4f4f4; transition: 0.2s; letter-spacing: 1px; color: #555;}
+        .btn-gano:hover { background: var(--dorado-club); color: var(--fondo-oscuro); border-color: var(--dorado-brillante); }
+        .btn-gano.winner { background: var(--rojo-club); color: #fff; border-color: var(--rojo-oscuro); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        
+        .separador { font-weight: 800; color: #bbb; font-size: 0.8rem; margin: 0 5px; }
+
+        .btn-avanzar-fase {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--dorado-brillante), var(--dorado-club)); color: var(--fondo-oscuro);
+            padding: 12px 30px; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 900;
+            border-radius: 50px; border: 3px solid #fff; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            z-index: 100; display: none; transition: 0.3s; text-transform: uppercase;
+        }
+        .btn-avanzar-fase:hover { transform: translateX(-50%) scale(1.05); box-shadow: 0 12px 25px rgba(0,0,0,0.7); }
+    </style>
+</head>
+<body>
+
+    <div class="fondo-base"></div>
+    <div class="marca-agua"></div>
+
+    <header>
+        <a href="truco.html" class="btn-volver-cabecera">⬅ Volver</a>
+        <img src="fondo.png" alt="L">
+        <h1>SUPERLIGA CALIFORNIA</h1>
+        <img src="fondo.png" alt="R">
+    </header>
+
+    <div id="sponsors-placeholder"></div>
+
+    <main class="superliga-main">
+        <div class="selector-grupos" id="btns"></div>
+        
+        <div class="grid-superliga">
+            <div class="card">
+                <h3 id="tituloTabla">POSICIONES</h3>
+                <div class="tabla-container">
+                    <table id="tbl">
+                        <thead><tr><th>EQUIPO</th><th>PTS</th><th>PG</th></tr></thead>
+                        <tbody id="body"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>PARTIDOS DEL GRUPO</h3>
+                <div class="fixture-container" id="fix"></div>
+            </div>
+        </div>
+
+        <button class="btn-avanzar-fase" id="btnSiguienteFase" onclick="armarPlayoffs()">🏆 Avanzar a Copa Oro y Plata</button>
+    </main>
+
+    <div class="cinta-premios"><div class="marquee-track" id="trackPremiosTruco"></div></div>
+
+    <script src="sponsors.js"></script>
+    <script src="premios-truco.js"></script>
+    
+    <script>
+        const eqs = JSON.parse(localStorage.getItem('truco_equipos')) || [];
+        if(!eqs || eqs.length === 0) window.location.href = "truco.html";
+
+        let data = JSON.parse(localStorage.getItem('superliga_data')) || null;
+        let gAct = 'A';
+
+        if(!data) {
+            data = {}; const letras = "ABCDEFGH"; const nG = eqs.length / 4;
+            for(let i=0; i<nG; i++) {
+                let l = letras[i]; let sub = eqs.slice(i*4, (i+1)*4);
+                data[l] = { 
+                    equipos: sub.map(e => ({...e, pts:0, pg:0})), 
+                    partidos: [ 
+                        {e1:sub[0].nombre, e2:sub[1].nombre, win:null}, {e1:sub[2].nombre, e2:sub[3].nombre, win:null}, 
+                        {e1:sub[0].nombre, e2:sub[2].nombre, win:null}, {e1:sub[1].nombre, e2:sub[3].nombre, win:null}, 
+                        {e1:sub[0].nombre, e2:sub[3].nombre, win:null}, {e1:sub[1].nombre, e2:sub[2].nombre, win:null} 
+                    ] 
+                };
+            }
+            localStorage.setItem('superliga_data', JSON.stringify(data));
+        }
+
+        function draw() {
+            const b = document.getElementById('btns'); b.innerHTML = '';
+            Object.keys(data).forEach(l => { b.innerHTML += `<button class="btn-grupo ${l===gAct?'active':''}" onclick="setG('${l}')">GRUPO ${l}</button>`; });
+            
+            document.getElementById('tituloTabla').innerText = `POSICIONES - GRUPO ${gAct}`;
+            
+            const t = document.getElementById('body'); t.innerHTML = '';
+            const sorted = [...data[gAct].equipos].sort((a,b) => b.pts - a.pts || b.pg - a.pg);
+            sorted.forEach((e, idx) => {
+                let clase = idx < 2 ? 'pos-oro' : 'pos-plata';
+                t.innerHTML += `<tr class="${clase}"><td style="text-align:left">${e.nombre}</td><td>${e.pts}</td><td>${e.pg}</td></tr>`;
+            });
+
+            const f = document.getElementById('fix'); f.innerHTML = '';
+            data[gAct].partidos.forEach((p, i) => {
+                let txt1 = p.win === 1 ? '🏆 GANADOR' : 'GANÓ';
+                let txt2 = p.win === 2 ? '🏆 GANADOR' : 'GANÓ';
+                f.innerHTML += `
+                    <div class="partido-fila">
+                        <span class="nombre-equipo" style="text-align:right">${p.e1}</span>
+                        <button class="btn-gano ${p.win===1?'winner':''}" onclick="win('${i}',1)">${txt1}</button>
+                        <span class="separador">VS</span>
+                        <button class="btn-gano ${p.win===2?'winner':''}" onclick="win('${i}',2)">${txt2}</button>
+                        <span class="nombre-equipo" style="text-align:left">${p.e2}</span>
+                    </div>`;
+            });
+            checkCompletion();
+        }
+
+        function setG(l) { gAct = l; draw(); }
+
+        function win(pi, num) {
+            const g = data[gAct]; const p = g.partidos[pi];
+            if (p.win === num) p.win = null; else p.win = num;
+            
+            g.equipos.forEach(e => { e.pts = 0; e.pg = 0; });
+            g.partidos.forEach(part => {
+                if(part.win !== null) {
+                    const eqGanador = part.win === 1 ? part.e1 : part.e2;
+                    const w = g.equipos.find(e => e.nombre === eqGanador);
+                    if (w) { w.pts += 3; w.pg++; }
+                }
+            });
+            localStorage.setItem('superliga_data', JSON.stringify(data)); draw();
+        }
+
+        function checkCompletion() {
+            let allFinished = true;
+            Object.keys(data).forEach(g => { data[g].partidos.forEach(p => { if (p.win === null) allFinished = false; }); });
+            document.getElementById('btnSiguienteFase').style.display = allFinished ? 'block' : 'none';
+        }
+
+        function armarPlayoffs() {
+            let oro = []; let plata = [];
+            Object.keys(data).forEach(g => {
+                const sorted = [...data[g].equipos].sort((a,b) => b.pts - a.pts || b.pg - a.pg);
+                oro.push({grupo: g, pos: 1, equipo: sorted[0]});
+                oro.push({grupo: g, pos: 2, equipo: sorted[1]});
+                if(sorted[2]) plata.push({grupo: g, pos: 3, equipo: sorted[2]});
+                if(sorted[3]) plata.push({grupo: g, pos: 4, equipo: sorted[3]});
+            });
+            localStorage.setItem('superliga_clasificados', JSON.stringify({oro, plata}));
+            window.location.href = 'llave-superliga.html'; 
+        }
+
+        draw();
+    </script>
+</body>
+</html>
