@@ -1,7 +1,7 @@
 // =========================================================
 // 1. DIBUJAR PREMIOS DEL BINGO (Lee de la memoria)
 // =========================================================
-const premiosBingo = JSON.parse(localStorage.getItem('bingo_premios')) || ["1° Premio", "2° Premio"];
+const premiosBingo = JSON.parse(localStorage.getItem('bingo_premios')) || ["1° Premio Sorpresa", "2° Premio Sorpresa"];
 
 const trackPremios = document.getElementById('trackPremios');
 if (trackPremios) {
@@ -123,6 +123,7 @@ btnGenerar.addEventListener('click', () => {
         displayNumero.textContent = formatearNumero(randomTemp);
     }, 50); 
 
+    // ACÁ ESTÁ EL CAMBIO FINAL: 2000 milisegundos (2 segundos)
     setTimeout(() => {
         clearInterval(intervaloGiro);
         displayNumero.classList.remove('sorteando');
@@ -168,7 +169,7 @@ btnGenerar.addEventListener('click', () => {
         } else {
             btnGenerar.disabled = false;
         }
-    }, 4500); 
+    }, 2000); 
 });
 
 btnReiniciar.addEventListener('click', () => {
